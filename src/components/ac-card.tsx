@@ -18,9 +18,9 @@ const statusConfig = {
 } as const;
 
 const gasTypeColorMap: { [key: string]: string } = {
-  r22: 'hover:bg-green-100 dark:hover:bg-green-900/50',
-  r410a: 'hover:bg-pink-100 dark:hover:bg-pink-900/50',
-  r32: 'hover:bg-blue-100 dark:hover:bg-blue-900/50',
+  r22: 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200',
+  r410a: 'bg-pink-100 dark:bg-pink-900/50 text-pink-800 dark:text-pink-200',
+  r32: 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200',
 };
 
 
@@ -72,7 +72,7 @@ export function AcCard({ unit }: AcCardProps) {
                  <Power className="w-4 h-4" />
                 <span>{inverter}</span>
             </div>
-             <div className={cn("flex items-center gap-2 text-muted-foreground uppercase p-1 rounded-md transition-colors", gasColorClass)}>
+             <div className={cn("flex items-center gap-2 font-medium uppercase p-1 rounded-md", gasColorClass)}>
                  <Droplets className="w-4 h-4" />
                 <span>{gasType}</span>
             </div>
