@@ -13,6 +13,97 @@ const initialConfig: AppConfig = {
   inverterOptions: ['inverter', 'noninverter'],
 };
 
+const sampleAcUnits: Omit<ACUnit, 'id'>[] = [
+    {
+        modelNumber: 'CS-YN12WKJ',
+        serialNumber: 'SN-001-PAN',
+        inverter: 'inverter',
+        brand: 'panasonic',
+        btu: 12000,
+        gasType: 'r32',
+        acType: 'split',
+        status: 'active',
+        mapLocation: 'https://maps.app.goo.gl/abcdef123456',
+        installLocation: 'Main Hall',
+        company: 'boc',
+        companyCity: 'Colombo',
+    },
+    {
+        modelNumber: 'AR18TYHYEWKNST',
+        serialNumber: 'SN-002-SAM',
+        inverter: 'inverter',
+        brand: 'samsung',
+        btu: 18000,
+        gasType: 'r410a',
+        acType: 'split',
+        status: 'active',
+        mapLocation: 'https://maps.app.goo.gl/bcdefg234567',
+        installLocation: 'CEO Office',
+        company: 'asiri',
+        companyCity: 'Kandy',
+    },
+    {
+        modelNumber: 'LSU-12HUV',
+        serialNumber: 'SN-003-LG',
+        inverter: 'noninverter',
+        brand: 'lg',
+        btu: 12000,
+        gasType: 'r22',
+        acType: 'cassete',
+        status: 'breakdown',
+        mapLocation: 'https://maps.app.goo.gl/cdefgh345678',
+        installLocation: 'Server Room',
+        company: 'nsb',
+        companyCity: 'Galle',
+    },
+    {
+        modelNumber: 'MSY-GN18VF',
+        serialNumber: 'SN-004-MIT',
+        inverter: 'inverter',
+        brand: 'mitsubishi',
+        btu: 18000,
+        gasType: 'r32',
+        acType: 'ceiling suspend',
+        status: 'removed',
+        mapLocation: 'https://maps.app.goo.gl/defghi456789',
+        installLocation: 'Old Office, 3rd Floor',
+        company: 'hnb',
+        companyCity: 'Colombo',
+    },
+    {
+        modelNumber: 'TAC-09CSD',
+        serialNumber: 'SN-005-TCL',
+        inverter: 'noninverter',
+        brand: 'tcl',
+        btu: 9000,
+        gasType: 'r410a',
+        acType: 'split',
+        status: 'active',
+        mapLocation: 'https://maps.app.goo.gl/efghij567890',
+        installLocation: 'Reception Area',
+        company: 'boc',
+        companyCity: 'Jaffna',
+    },
+     {
+        modelNumber: 'CASA-12-PRO',
+        serialNumber: 'SN-006-CUS',
+        inverter: 'inverter',
+        brand: 'media',
+        btu: 12000,
+        gasType: 'r32',
+        acType: 'split',
+        status: 'active',
+        mapLocation: 'https://maps.app.goo.gl/fghijk678901',
+        installLocation: 'Master Bedroom',
+        company: 'customer',
+        companyCity: 'Negombo',
+        customerName: 'Nimal Perera',
+        customerAddress: '12, Sea Street, Negombo',
+        customerContact: '0712345678',
+    },
+];
+
+
 const initialState: AppState = {
   acUnits: [],
   config: initialConfig,
@@ -35,14 +126,22 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       const storedState = localStorage.getItem('airwave_app_state');
       if (storedState) {
         const { acUnits: storedUnits, config: storedConfig } = JSON.parse(storedState);
-        if (storedUnits) setAcUnits(storedUnits);
+        if (storedUnits && storedUnits.length > 0) {
+            setAcUnits(storedUnits);
+        } else {
+             setAcUnits(sampleAcUnits.map(unit => ({ ...unit, id: new Date().toISOString() + Math.random() })));
+        }
         if (storedConfig) {
              // Merge stored config with initial config to prevent missing keys on update
              setConfig(prevConfig => ({ ...prevConfig, ...storedConfig }));
         }
+      } else {
+         setAcUnits(sampleAcUnits.map(unit => ({ ...unit, id: new Date().toISOString() + Math.random() })));
       }
     } catch (error) {
       console.error("Failed to load state from localStorage", error);
+      // Fallback to sample data if localStorage is corrupt
+      setAcUnits(sampleAcUnits.map(unit => ({ ...unit, id: new Date().toISOString() + Math.random() })));
     }
     setIsInitialized(true);
   }, []);
@@ -52,7 +151,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       try {
         const stateToStore = JSON.stringify({ acUnits, config });
         localStorage.setItem('airwave_app_state', stateToStore);
-      } catch (error) {
+      } catch (error)
+{
         console.error("Failed to save state to localStorage", error);
       }
     }
