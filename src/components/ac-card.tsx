@@ -89,11 +89,6 @@ export function AcCard({ unit }: AcCardProps) {
         <div className="flex items-center gap-2 text-sm text-muted-foreground w-full">
             <Building className="w-4 h-4" />
             <p className="truncate flex-1" title={installLocation}>{installLocation}</p>
-             {mapLocation && (
-              <a href={mapLocation} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                <ExternalLink className="w-4 h-4" />
-              </a>
-            )}
         </div>
       </CardFooter>
     </Card>
