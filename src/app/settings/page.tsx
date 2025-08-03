@@ -134,7 +134,7 @@ export default function SettingsPage() {
                                 <div className="flex gap-2">
                                     <Input
                                         type={key === 'btuCapacities' ? 'number' : 'text'}
-                                        placeholder={`Add new ${label.slice(0, -1).toLowerCase()}`}
+                                        placeholder={`Add new ${label.endsWith('s') ? label.slice(0, -1).toLowerCase() : label.toLowerCase()}`}
                                         value={newValues[key] || ''}
                                         onChange={(e) => setNewValues(prev => ({ ...prev, [key]: e.target.value }))}
                                         onKeyDown={(e) => e.key === 'Enter' && handleAddNewValue(key as any)}
