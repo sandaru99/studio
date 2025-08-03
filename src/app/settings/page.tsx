@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,7 +9,7 @@ import { useAppStore } from '@/hooks/use-app-store';
 import { useToast } from '@/hooks/use-toast';
 import { PageHeader } from '@/components/page-header';
 import { AppConfig } from '@/types';
-import { Download, Upload, PlusCircle, X } from 'lucide-react';
+import { Download, Upload, PlusCircle, X, Home } from 'lucide-react';
 
 type ConfigKey = keyof Omit<AppConfig, 'btuCapacities' | 'inverterOptions'>;
 type ConfigNumberKey = keyof Pick<AppConfig, 'btuCapacities'>;
@@ -88,7 +89,7 @@ export default function SettingsPage() {
 
 
     const configSections: { key: ConfigKey, label: string }[] = [
-        { key: 'companies', label: 'Companies' },
+        { key: 'companies', label: 'Company' },
         { key: 'brands', label: 'AC Brands' },
         { key: 'gasTypes', label: 'Gas Types' },
         { key: 'acTypes', label: 'AC Types' },
@@ -108,7 +109,14 @@ export default function SettingsPage() {
             <PageHeader
                 title="Settings"
                 description="Manage application data and configurations."
-            />
+            >
+                 <Button asChild variant="outline">
+                    <Link href="/">
+                        <Home className="mr-2 h-4 w-4" />
+                        Back to Home
+                    </Link>
+                </Button>
+            </PageHeader>
             <div className="grid gap-8">
                 <Card>
                     <CardHeader>
