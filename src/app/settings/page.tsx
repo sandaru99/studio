@@ -8,7 +8,7 @@ import { useAppStore } from '@/hooks/use-app-store';
 import { useToast } from '@/hooks/use-toast';
 import { PageHeader } from '@/components/page-header';
 import { AppConfig } from '@/types';
-import { Download, Upload, PlusCircle } from 'lucide-react';
+import { Download, Upload, PlusCircle, X } from 'lucide-react';
 
 type ConfigKey = keyof Omit<AppConfig, 'btuCapacities' | 'inverterOptions'>;
 type ConfigNumberKey = keyof Pick<AppConfig, 'btuCapacities'>;
@@ -75,8 +75,17 @@ export default function SettingsPage() {
 
         updateConfig({ [key]: newList });
         setNewValues(prev => ({ ...prev, [key]: '' }));
-        toast({ title: "👍 Value Added", description: `"${value}" has been added to ${key}.` });
+        toast({ title: "👍 Value Added", description: `"${value}" has been added.` });
     };
+
+    const handleRemoveValue = (key: ConfigKey | ConfigNumberKey, valueToRemove: string | number) => {
+        const currentList = config[key as keyof AppConfig] as (string | number)[];
+        const newList = currentList.filter(item => item !== valueToRemove);
+        
+        updateConfig({ [key]: newList });
+        toast({ title: "👍 Value Removed", description: `"${valueToRemove}" has been removed.` });
+    };
+
 
     const configSections: { key: ConfigKey, label: string }[] = [
         { key: 'companies', label: 'Companies' },
@@ -116,7 +125,7 @@ export default function SettingsPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle>Manage Configurations</CardTitle>
-                        <CardDescription>Add new options to the dropdown menus throughout the app.</CardDescription>
+                        <CardDescription>Add or remove options for the dropdown menus throughout the app.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         {configSections.concat(numberConfigSections as any).map(({ key, label }) => (
@@ -132,10 +141,17 @@ export default function SettingsPage() {
                                     />
                                     <Button onClick={() => handleAddNewValue(key as any)}><PlusCircle className="mr-2 h-4 w-4" />Add</Button>
                                 </div>
-                                <div className="flex flex-wrap gap-2 mt-2">
+                                <div className="flex flex-wrap gap-2 mt-3">
                                     {config[key as keyof AppConfig].map(item => (
-                                        <div key={item} className="bg-muted text-muted-foreground px-3 py-1 rounded-full text-sm">
-                                            {item}
+                                        <div key={item} className="bg-muted text-muted-foreground pl-3 pr-2 py-1 rounded-full text-sm flex items-center gap-1.5">
+                                            <span>{item}</span>
+                                            <button 
+                                                onClick={() => handleRemoveValue(key as any, item)}
+                                                className="bg-muted-foreground/20 hover:bg-destructive hover:text-destructive-foreground rounded-full p-0.5"
+                                                aria-label={`Remove ${item}`}
+                                            >
+                                                <X className="h-3 w-3" />
+                                            </button>
                                         </div>
                                     ))}
                                 </div>
