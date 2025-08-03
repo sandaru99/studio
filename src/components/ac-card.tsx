@@ -3,9 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { 
-    Building, MapPin, Tag, Wrench, Thermometer, Info, Power, Droplets, Hash, User, Home, Phone, ExternalLink 
+    Building, MapPin, Tag, Wrench, Thermometer, Info, Power, Droplets, Hash, User, Home, Phone
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAppStore } from '@/hooks/use-app-store';
 
 interface AcCardProps {
   unit: ACUnit;
@@ -25,19 +26,22 @@ const gasTypeColorMap: { [key: string]: string } = {
 
 
 export function AcCard({ unit }: AcCardProps) {
+  const { config } = useAppStore();
   const { 
       status, company, companyCity, brand, btu, modelNumber, serialNumber, installLocation, 
       acType, inverter, gasType, mapLocation, customerName, customerAddress, customerContact 
   } = unit;
   const currentStatus = statusConfig[status as keyof typeof statusConfig] || statusConfig.removed;
   const gasColorClass = gasTypeColorMap[gasType.toLowerCase()] || '';
+  const companyInfo = config.companies.find(c => c.name === company);
+  const companyColor = companyInfo?.color || '#A0A0A0';
 
   return (
     <Card className="flex flex-col h-full hover:shadow-xl transition-shadow duration-300 bg-card">
-      <CardHeader>
+      <CardHeader style={{ borderTop: `4px solid ${companyColor}` }}>
         <div className="flex justify-between items-start gap-2">
           <div>
-            <CardTitle className="text-lg font-bold text-primary capitalize">{company}</CardTitle>
+            <CardTitle className="text-lg font-bold capitalize" style={{ color: companyColor }}>{company}</CardTitle>
             <CardDescription className="flex items-center gap-2 text-sm text-muted-foreground">
               <MapPin className="w-4 h-4" />
               <span>{companyCity}</span>
@@ -82,7 +86,7 @@ export function AcCard({ unit }: AcCardProps) {
             <>
                 <Separator />
                 <div className="space-y-2">
-                     <h4 className="font-semibold text-primary">Customer Details</h4>
+                     <h4 className="font-semibold" style={{color: companyColor}}>Customer Details</h4>
                      <div className="flex items-center gap-2 text-muted-foreground"><User className="w-4 h-4"/> {customerName}</div>
                      <div className="flex items-center gap-2 text-muted-foreground"><Home className="w-4 h-4"/> {customerAddress}</div>
                      <div className="flex items-center gap-2 text-muted-foreground"><Phone className="w-4 h-4"/> {customerContact}</div>

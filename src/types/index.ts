@@ -1,3 +1,8 @@
+export type Company = {
+  name: string;
+  color: string;
+};
+
 export type ACUnit = {
   id: string;
   modelNumber: string;
@@ -28,7 +33,7 @@ export interface AppState {
 }
 
 export interface AppConfig {
-  companies: string[];
+  companies: Company[];
   statuses: string[];
   brands: string[];
   btuCapacities: number[];

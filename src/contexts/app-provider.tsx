@@ -1,10 +1,16 @@
 "use client";
 
 import { createContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import type { AppState, AppConfig, ACUnit } from '@/types';
+import type { AppState, AppConfig, ACUnit, Company } from '@/types';
 
 const initialConfig: AppConfig = {
-  companies: ['boc', 'asiri', 'nsb', 'hnb', 'customer'],
+  companies: [
+      { name: 'boc', color: '#1E90FF' },
+      { name: 'asiri', color: '#32CD32' },
+      { name: 'nsb', color: '#FFD700' },
+      { name: 'hnb', color: '#FF4500' },
+      { name: 'customer', color: '#8A2BE2' }
+  ],
   statuses: ['active', 'breakdown', 'removed'],
   brands: ['panasonic', 'tcl', 'nikai', 'lg', 'mitsubishi', 'techo', 'nikura', 'toshiba', 'samsung', 'frostair', 'media'],
   btuCapacities: [9000, 10000, 12000, 13000, 18000, 24000],
@@ -133,7 +139,15 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         }
         if (storedConfig) {
              // Merge stored config with initial config to prevent missing keys on update
-             setConfig(prevConfig => ({ ...prevConfig, ...storedConfig }));
+             const mergedConfig = { ...initialConfig, ...storedConfig };
+             if (storedConfig.companies && Array.isArray(storedConfig.companies) && storedConfig.companies.every((c: any) => typeof c === 'string')) {
+                const newCompanies = storedConfig.companies.map((name: string) => {
+                    const existing = initialConfig.companies.find(ic => ic.name === name);
+                    return existing || { name, color: '#CCCCCC' };
+                });
+                mergedConfig.companies = newCompanies;
+             }
+             setConfig(mergedConfig);
         }
       } else {
          setAcUnits(sampleAcUnits.map(unit => ({ ...unit, id: new Date().toISOString() + Math.random() })));

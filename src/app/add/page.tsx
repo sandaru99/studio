@@ -136,7 +136,7 @@ export default function AddAcPage() {
                                                 <SelectTrigger><SelectValue placeholder="Select a company" /></SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {config.companies.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                                                {config.companies.map(c => <SelectItem key={c.name} value={c.name} className="capitalize">{c.name}</SelectItem>)}
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />

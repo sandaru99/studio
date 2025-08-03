@@ -70,7 +70,7 @@ export default function Home() {
               <SelectContent>
                 <SelectItem value="all">All Companies</SelectItem>
                 {config.companies.map(company => (
-                  <SelectItem key={company} value={company}>{company}</SelectItem>
+                  <SelectItem key={company.name} value={company.name} className="capitalize">{company.name}</SelectItem>
                 ))}
               </SelectContent>
             </Select>

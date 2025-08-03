@@ -8,17 +8,20 @@ import { Input } from '@/components/ui/input';
 import { useAppStore } from '@/hooks/use-app-store';
 import { useToast } from '@/hooks/use-toast';
 import { PageHeader } from '@/components/page-header';
-import { AppConfig } from '@/types';
+import { AppConfig, Company } from '@/types';
 import { Download, Upload, PlusCircle, X, Home } from 'lucide-react';
 
-type ConfigKey = keyof Omit<AppConfig, 'btuCapacities' | 'inverterOptions'>;
+type ConfigKey = keyof Omit<AppConfig, 'companies' | 'btuCapacities' | 'inverterOptions'>;
 type ConfigNumberKey = keyof Pick<AppConfig, 'btuCapacities'>;
 
 export default function SettingsPage() {
     const { config, acUnits, updateConfig, importData, isInitialized } = useAppStore();
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [newValues, setNewValues] = useState<Record<string, string>>({});
+    const [newValues, setNewValues] = useState<Record<string, string>>({
+        companyName: '',
+        companyColor: '#000000'
+    });
 
     const handleExport = () => {
         const dataStr = JSON.stringify({ config, acUnits }, null, 2);
@@ -50,6 +53,32 @@ export default function SettingsPage() {
         };
         reader.readAsText(file);
     };
+
+    const handleAddNewCompany = () => {
+        const name = newValues.companyName.trim();
+        const color = newValues.companyColor;
+        if (!name) {
+            toast({ variant: "destructive", title: "Invalid Input", description: "Company name cannot be empty." });
+            return;
+        }
+
+        if (config.companies.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+            toast({ variant: "destructive", title: "Duplicate Value", description: `Company "${name}" already exists.` });
+            return;
+        }
+
+        const newCompany: Company = { name, color };
+        const newList = [...config.companies, newCompany].sort((a,b) => a.name.localeCompare(b.name));
+        updateConfig({ companies: newList });
+        setNewValues(prev => ({ ...prev, companyName: '', companyColor: '#000000' }));
+        toast({ title: "👍 Company Added", description: `"${name}" has been added.` });
+    }
+
+    const handleRemoveCompany = (companyToRemove: Company) => {
+        const newList = config.companies.filter(c => c.name !== companyToRemove.name);
+        updateConfig({ companies: newList });
+        toast({ title: "👍 Company Removed", description: `"${companyToRemove.name}" has been removed.` });
+    }
 
     const handleAddNewValue = (key: ConfigKey | ConfigNumberKey) => {
         const isNumberKey = key === 'btuCapacities';
@@ -87,9 +116,7 @@ export default function SettingsPage() {
         toast({ title: "👍 Value Removed", description: `"${valueToRemove}" has been removed.` });
     };
 
-
     const configSections: { key: ConfigKey, label: string }[] = [
-        { key: 'companies', label: 'Company' },
         { key: 'brands', label: 'AC Brands' },
         { key: 'gasTypes', label: 'Gas Types' },
         { key: 'acTypes', label: 'AC Types' },
@@ -136,6 +163,40 @@ export default function SettingsPage() {
                         <CardDescription>Add or remove options for the dropdown menus throughout the app.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
+                        <div>
+                            <h3 className="font-medium mb-2">Company</h3>
+                            <div className="flex gap-2">
+                                <Input
+                                    type="text"
+                                    placeholder="Add new company name"
+                                    value={newValues.companyName || ''}
+                                    onChange={(e) => setNewValues(prev => ({ ...prev, companyName: e.target.value }))}
+                                />
+                                <Input
+                                    type="color"
+                                    value={newValues.companyColor || '#000000'}
+                                    onChange={(e) => setNewValues(prev => ({ ...prev, companyColor: e.target.value }))}
+                                    className="w-24 p-1"
+                                />
+                                <Button onClick={handleAddNewCompany}><PlusCircle className="mr-2 h-4 w-4" />Add</Button>
+                            </div>
+                            <div className="flex flex-wrap gap-2 mt-3">
+                                {config.companies.map(company => (
+                                    <div key={company.name} className="bg-muted text-muted-foreground pl-3 pr-2 py-1 rounded-full text-sm flex items-center gap-2">
+                                        <span className="w-4 h-4 rounded-full" style={{ backgroundColor: company.color }}></span>
+                                        <span className="capitalize">{company.name}</span>
+                                        <button 
+                                            onClick={() => handleRemoveCompany(company)}
+                                            className="bg-muted-foreground/20 hover:bg-destructive hover:text-destructive-foreground rounded-full p-0.5"
+                                            aria-label={`Remove ${company.name}`}
+                                        >
+                                            <X className="h-3 w-3" />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
                         {configSections.concat(numberConfigSections as any).map(({ key, label }) => (
                             <div key={key}>
                                 <h3 className="font-medium mb-2">{label}</h3>
@@ -151,7 +212,7 @@ export default function SettingsPage() {
                                 </div>
                                 <div className="flex flex-wrap gap-2 mt-3">
                                     {config[key as keyof AppConfig].map(item => (
-                                        <div key={item} className="bg-muted text-muted-foreground pl-3 pr-2 py-1 rounded-full text-sm flex items-center gap-1.5">
+                                        <div key={String(item)} className="bg-muted text-muted-foreground pl-3 pr-2 py-1 rounded-full text-sm flex items-center gap-1.5">
                                             <span>{item}</span>
                                             <button 
                                                 onClick={() => handleRemoveValue(key as any, item)}
