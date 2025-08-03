@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useForm, useFieldArray, Controller } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
@@ -16,7 +16,7 @@ import { Separator } from '@/components/ui/separator';
 import { useAppStore } from '@/hooks/use-app-store';
 import { useToast } from '@/hooks/use-toast';
 import { PageHeader } from '@/components/page-header';
-import { PlusCircle, Trash2, MapPin, Copy } from 'lucide-react';
+import { PlusCircle, Trash2, MapPin } from 'lucide-react';
 
 const acUnitSchema = z.object({
   modelNumber: z.string().min(1, 'Model number is required'),
@@ -86,15 +86,6 @@ export default function AddAcPage() {
             setMapPreviewUrl('');
         }
     }, [mapLocationWatcher]);
-
-    const handleDuplicateUnit = (index: number) => {
-        const unitToDuplicate = form.getValues(`acUnits.${index}`);
-        append(unitToDuplicate);
-        toast({
-            title: "Unit Duplicated!",
-            description: `AC Unit #${index + 1} has been copied.`,
-        });
-    };
 
     const onSubmit = (data: FormData) => {
         const unitsToAdd = data.acUnits.map(unit => ({
@@ -191,10 +182,6 @@ export default function AddAcPage() {
                             <CardHeader>
                                 <CardTitle>AC Unit #{index + 1}</CardTitle>
                                 <div className="absolute top-4 right-4 flex gap-2">
-                                    <Button type="button" variant="outline" size="icon" onClick={() => handleDuplicateUnit(index)}>
-                                        <Copy className="h-4 w-4" />
-                                        <span className="sr-only">Duplicate Unit</span>
-                                    </Button>
                                     {fields.length > 1 && (
                                         <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}>
                                             <Trash2 className="h-4 w-4" />
