@@ -3,15 +3,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { 
-    Building, MapPin, Tag, Wrench, Thermometer, Power, Droplets, Hash, User, Home, Phone, Pencil, Trash2
+    Building, MapPin, Tag, Wrench, Thermometer, Power, Droplets, Hash, User, Home, Phone
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/hooks/use-app-store';
-import { Button } from './ui/button';
 
 interface AcCardProps {
   unit: ACUnit;
   isGrouped?: boolean;
+  onClick?: () => void;
 }
 
 const statusConfig = {
@@ -27,10 +27,10 @@ const gasTypeColorMap: { [key: string]: string } = {
 };
 
 
-export function AcCard({ unit, isGrouped = false }: AcCardProps) {
-  const { config, removeAcUnit } = useAppStore();
+export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
+  const { config } = useAppStore();
   const { 
-      id, status, company, companyCity, brand, btu, modelNumber, serialNumber, installLocation, 
+      status, company, companyCity, brand, btu, modelNumber, serialNumber, installLocation, 
       acType, inverter, gasType, customerName, customerAddress, customerContact 
   } = unit;
   const currentStatus = statusConfig[status as keyof typeof statusConfig] || statusConfig.removed;
@@ -42,12 +42,17 @@ export function AcCard({ unit, isGrouped = false }: AcCardProps) {
 
   return (
     <CardComponent 
-        className={cn("flex flex-col h-full bg-card", !isGrouped && "hover:shadow-xl transition-shadow duration-300")}
+        className={cn(
+            "flex flex-col h-full bg-card", 
+            !isGrouped && "hover:shadow-xl transition-shadow duration-300",
+            onClick && "cursor-pointer"
+        )}
         style={!isGrouped ? {
             borderWidth: '1px',
             borderColor: companyColor,
             borderTopWidth: '4px',
         } : {}}
+        onClick={onClick}
     >
       <CardHeader className={isGrouped ? 'pb-2' : ''}>
         <div className="flex justify-between items-start gap-2">
@@ -115,20 +120,7 @@ export function AcCard({ unit, isGrouped = false }: AcCardProps) {
                 </div>
             </>
         )}
-
       </CardContent>
-
-      <CardFooter className={cn("pt-4 flex justify-end gap-2", isGrouped ? "p-0" : "p-4")}>
-        <Button variant="outline" size="sm">
-            <Pencil className="w-3 h-3 mr-2" />
-            Edit
-        </Button>
-        <Button variant="destructive" size="sm" onClick={() => removeAcUnit(id)}>
-            <Trash2 className="w-3 h-3 mr-2" />
-            Delete
-        </Button>
-      </CardFooter>
-
     </CardComponent>
   );
 }

@@ -8,9 +8,10 @@ import { useAppStore } from '@/hooks/use-app-store';
 
 interface GroupedAcCardProps {
   units: ACUnit[];
+  onCardClick: (unit: ACUnit) => void;
 }
 
-export function GroupedAcCard({ units }: GroupedAcCardProps) {
+export function GroupedAcCard({ units, onCardClick }: GroupedAcCardProps) {
   const { config } = useAppStore();
   const firstUnit = units[0];
   const { company, companyCity } = firstUnit;
@@ -49,7 +50,7 @@ export function GroupedAcCard({ units }: GroupedAcCardProps) {
             {units.map((unit, index) => (
               <div key={unit.id}>
                 {index > 0 && <Separator className="my-4" />}
-                <AcCard unit={unit} isGrouped={true} />
+                <AcCard unit={unit} isGrouped={true} onClick={() => onCardClick(unit)} />
               </div>
             ))}
           </div>

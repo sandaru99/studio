@@ -10,6 +10,7 @@ import { PageHeader } from '@/components/page-header';
 import { GroupedAcCard } from '@/components/grouped-ac-card';
 import { PlusCircle, Settings } from 'lucide-react';
 import { ACUnit } from '@/types';
+import { AcDetailsDialog } from '@/components/ac-details-dialog';
 
 export default function Home() {
   const { acUnits, config } = useAppStore();
@@ -18,6 +19,7 @@ export default function Home() {
     city: 'all',
     status: 'all',
   });
+  const [selectedUnit, setSelectedUnit] = useState<ACUnit | null>(null);
 
   const handleFilterChange = (filterName: keyof typeof filters) => (value: string) => {
     setFilters(prev => ({ ...prev, [filterName]: value }));
@@ -48,7 +50,16 @@ export default function Home() {
 
   const uniqueCities = useMemo(() => [...new Set(acUnits.map(unit => unit.companyCity))], [acUnits]);
 
+  const handleCardClick = (unit: ACUnit) => {
+    setSelectedUnit(unit);
+  }
+
+  const handleDialogClose = () => {
+    setSelectedUnit(null);
+  }
+
   return (
+    <>
     <div className="flex flex-1 flex-col p-4 md:p-6 lg:p-8 gap-6">
       <PageHeader
         title="AC Unit Dashboard"
@@ -122,7 +133,7 @@ export default function Home() {
       {groupedUnits.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {groupedUnits.map((group, index) => (
-             <GroupedAcCard key={`${group[0].company}-${group[0].companyCity}-${index}`} units={group} />
+             <GroupedAcCard key={`${group[0].company}-${group[0].companyCity}-${index}`} units={group} onCardClick={handleCardClick} />
           ))}
         </div>
       ) : (
@@ -140,5 +151,7 @@ export default function Home() {
         </div>
       )}
     </div>
+    <AcDetailsDialog unit={selectedUnit} isOpen={!!selectedUnit} onOpenChange={handleDialogClose} />
+    </>
   );
 }
