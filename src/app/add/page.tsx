@@ -28,24 +28,24 @@ const acUnitSchema = z.object({
   acType: z.string().min(1, 'AC type is required'),
   status: z.string().min(1, 'Status is required'),
   installLocation: z.string().min(1, 'Install location is required'),
-  customerName: z.string().optional(),
-  customerAddress: z.string().optional(),
-  customerContact: z.string().optional(),
 });
 
 const formSchema = z.object({
   company: z.string().min(1, 'Company is required'),
   companyCity: z.string().min(1, 'Company city is required'),
   mapLocation: z.string().url('Must be a valid Google Maps URL').or(z.literal('')),
+  customerName: z.string().optional(),
+  customerAddress: z.string().optional(),
+  customerContact: z.string().optional(),
   acUnits: z.array(acUnitSchema).min(1, 'At least one AC unit is required'),
 }).refine(data => {
     if (data.company === 'customer') {
-        return data.acUnits.every(unit => unit.customerName && unit.customerAddress && unit.customerContact);
+        return data.customerName && data.customerAddress && data.customerContact;
     }
     return true;
 }, {
-    message: 'Customer details are required when company is "customer"',
-    path: ['acUnits'],
+    message: 'Customer name, address, and contact are required when company is "customer"',
+    path: ['customerName'], // You can point to one of the fields
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -93,6 +93,9 @@ export default function AddAcPage() {
             company: data.company,
             companyCity: data.companyCity,
             mapLocation: data.mapLocation,
+            customerName: data.company === 'customer' ? data.customerName : undefined,
+            customerAddress: data.company === 'customer' ? data.customerAddress : undefined,
+            customerContact: data.company === 'customer' ? data.customerContact : undefined,
         }));
         addAcUnits(unitsToAdd);
         toast({
@@ -160,6 +163,17 @@ export default function AddAcPage() {
                                     </div>
                                 ) }
                             </div>
+                             {companyWatcher === 'customer' && (
+                                <>
+                                <Separator />
+                                <CardDescription>Please provide the customer's contact information.</CardDescription>
+                                <div className="grid md:grid-cols-3 gap-6">
+                                    <FormField name="customerName" control={form.control} render={({ field }) => (<FormItem><FormLabel>Customer Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                    <FormField name="customerAddress" control={form.control} render={({ field }) => (<FormItem><FormLabel>Customer Address</FormLabel><FormControl><Input placeholder="123 Main St, Colombo" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                    <FormField name="customerContact" control={form.control} render={({ field }) => (<FormItem><FormLabel>Customer Contact</FormLabel><FormControl><Input placeholder="0771234567" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                </div>
+                                </>
+                            )}
                         </CardContent>
                     </Card>
 
@@ -216,16 +230,6 @@ export default function AddAcPage() {
                                         </FormItem>
                                     )} />
                                 </div>
-                                {companyWatcher === 'customer' && (
-                                  <>
-                                    <Separator />
-                                    <div className="grid md:grid-cols-3 gap-6">
-                                      <FormField name={`acUnits.${index}.customerName`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Customer Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                                      <FormField name={`acUnits.${index}.customerAddress`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Customer Address</FormLabel><FormControl><Input placeholder="123 Main St, Colombo" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                                      <FormField name={`acUnits.${index}.customerContact`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Customer Contact</FormLabel><FormControl><Input placeholder="0771234567" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                                    </div>
-                                  </>
-                                )}
                             </CardContent>
                         </Card>
                     ))}
