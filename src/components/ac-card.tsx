@@ -5,6 +5,7 @@ import { Separator } from './ui/separator';
 import { 
     Building, MapPin, Tag, Wrench, Thermometer, Info, Power, Droplets, Hash, User, Home, Phone, ExternalLink 
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface AcCardProps {
   unit: ACUnit;
@@ -16,12 +17,20 @@ const statusConfig = {
   removed: { variant: 'secondary', label: 'Removed' },
 } as const;
 
+const gasTypeColorMap: { [key: string]: string } = {
+  r22: 'hover:bg-green-100 dark:hover:bg-green-900/50',
+  r410a: 'hover:bg-pink-100 dark:hover:bg-pink-900/50',
+  r32: 'hover:bg-blue-100 dark:hover:bg-blue-900/50',
+};
+
+
 export function AcCard({ unit }: AcCardProps) {
   const { 
       status, company, companyCity, brand, btu, modelNumber, serialNumber, installLocation, 
       acType, inverter, gasType, mapLocation, customerName, customerAddress, customerContact 
   } = unit;
   const currentStatus = statusConfig[status as keyof typeof statusConfig] || statusConfig.removed;
+  const gasColorClass = gasTypeColorMap[gasType.toLowerCase()] || '';
 
   return (
     <Card className="flex flex-col h-full hover:shadow-xl transition-shadow duration-300 bg-card">
@@ -51,19 +60,19 @@ export function AcCard({ unit }: AcCardProps) {
         </div>
 
         <div className="grid grid-cols-2 gap-3 pt-2">
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="flex items-center gap-2 text-muted-foreground p-1 rounded-md">
                 <Thermometer className="w-4 h-4" />
                 <span>{btu} BTU</span>
             </div>
-            <div className="flex items-center gap-2 text-muted-foreground capitalize">
+            <div className="flex items-center gap-2 text-muted-foreground capitalize p-1 rounded-md">
                  <Wrench className="w-4 h-4" />
                 <span>{acType}</span>
             </div>
-            <div className="flex items-center gap-2 text-muted-foreground capitalize">
+            <div className="flex items-center gap-2 text-muted-foreground capitalize p-1 rounded-md">
                  <Power className="w-4 h-4" />
                 <span>{inverter}</span>
             </div>
-             <div className="flex items-center gap-2 text-muted-foreground uppercase">
+             <div className={cn("flex items-center gap-2 text-muted-foreground uppercase p-1 rounded-md transition-colors", gasColorClass)}>
                  <Droplets className="w-4 h-4" />
                 <span>{gasType}</span>
             </div>
