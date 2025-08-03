@@ -1,3 +1,121 @@
+"use client";
+
+import { useState, useMemo } from 'react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
+import { useAppStore } from '@/hooks/use-app-store';
+import { PageHeader } from '@/components/page-header';
+import { AcCard } from '@/components/ac-card';
+import { PlusCircle } from 'lucide-react';
+
 export default function Home() {
-  return <></>;
+  const { acUnits, config } = useAppStore();
+  const [filters, setFilters] = useState({
+    company: 'all',
+    city: 'all',
+    status: 'all',
+  });
+
+  const handleFilterChange = (filterName: keyof typeof filters) => (value: string) => {
+    setFilters(prev => ({ ...prev, [filterName]: value }));
+  };
+
+  const filteredAcUnits = useMemo(() => {
+    return acUnits.filter(unit => {
+      const companyMatch = filters.company === 'all' || unit.company === filters.company;
+      const cityMatch = filters.city === 'all' || unit.companyCity === filters.city;
+      const statusMatch = filters.status === 'all' || unit.status === filters.status;
+      return companyMatch && cityMatch && statusMatch;
+    });
+  }, [acUnits, filters]);
+
+  const uniqueCities = useMemo(() => [...new Set(acUnits.map(unit => unit.companyCity))], [acUnits]);
+
+  return (
+    <div className="flex flex-1 flex-col p-4 md:p-6 lg:p-8 gap-6">
+      <PageHeader
+        title="AC Unit Dashboard"
+        description="View, filter, and manage all your AC units in one place."
+      >
+        <Button asChild>
+          <Link href="/add">
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add New AC
+          </Link>
+        </Button>
+      </PageHeader>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Filters</CardTitle>
+          <CardDescription>Refine your search for AC units.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Filter by Company */}
+            <Select onValueChange={handleFilterChange('company')} value={filters.company}>
+              <SelectTrigger>
+                <SelectValue placeholder="Filter by Company" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Companies</SelectItem>
+                {config.companies.map(company => (
+                  <SelectItem key={company} value={company}>{company}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Filter by City */}
+            <Select onValueChange={handleFilterChange('city')} value={filters.city}>
+              <SelectTrigger>
+                <SelectValue placeholder="Filter by City" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Cities</SelectItem>
+                {uniqueCities.map(city => (
+                  <SelectItem key={city} value={city}>{city}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Filter by Status */}
+            <Select onValueChange={handleFilterChange('status')} value={filters.status}>
+              <SelectTrigger>
+                <SelectValue placeholder="Filter by Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Statuses</SelectItem>
+                {config.statuses.map(status => (
+                  <SelectItem key={status} value={status} className="capitalize">{status}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+      
+      {filteredAcUnits.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredAcUnits.map(unit => (
+            <AcCard key={unit.id} unit={unit} />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center text-center py-20 rounded-lg border border-dashed">
+            <h2 className="text-2xl font-semibold mb-2">No AC Units Found</h2>
+            <p className="text-muted-foreground mb-4">
+              {acUnits.length > 0 ? "No units match your current filters." : "Get started by adding a new AC unit."}
+            </p>
+            <Button asChild>
+              <Link href="/add">
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Add Your First AC
+              </Link>
+            </Button>
+        </div>
+      )}
+    </div>
+  );
 }
