@@ -20,6 +20,7 @@ import { PageHeader } from '@/components/page-header';
 import { PlusCircle, Trash2, MapPin, Home } from 'lucide-react';
 
 const acUnitSchema = z.object({
+  id: z.string().optional(),
   modelNumber: z.string().min(1, 'Model number is required'),
   serialNumber: z.string().min(1, 'Serial number is required'),
   inverter: z.string().min(1, 'Inverter status is required'),
@@ -245,7 +246,7 @@ export default function AddAcPage() {
                     ))}
 
                     <div className="flex justify-between items-center">
-                        <Button type="button" variant="outline" onClick={() => append({ modelNumber: '', serialNumber: '', inverter: '', brand: '', btu: 0, gasType: '', acType: '', status: '', installLocation: '' })}>
+                        <Button type="button" variant="outline" onClick={() => append({ id: '', modelNumber: '', serialNumber: '', inverter: '', brand: '', btu: 0, gasType: '', acType: '', status: '', installLocation: '' })}>
                             <PlusCircle className="mr-2 h-4 w-4" />
                             Add Another AC
                         </Button>

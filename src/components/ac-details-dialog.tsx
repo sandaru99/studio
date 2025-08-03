@@ -18,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 
 interface AcDetailsDialogProps {
@@ -27,6 +28,7 @@ interface AcDetailsDialogProps {
 }
 
 export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogProps) {
+    const router = useRouter();
     const { removeAcUnit } = useAppStore();
     const { toast } = useToast();
 
@@ -39,6 +41,11 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
             description: `The unit ${unit.serialNumber} has been successfully removed.`
         })
         onOpenChange(false); // Close the dialog
+    }
+
+    const handleEdit = () => {
+        router.push(`/edit/${unit.id}`);
+        onOpenChange(false);
     }
 
     return (
@@ -56,7 +63,7 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
                 </div>
                 
                 <DialogFooter>
-                    <Button variant="outline">
+                    <Button variant="outline" onClick={handleEdit}>
                         <Pencil className="w-4 h-4 mr-2" />
                         Edit
                     </Button>

@@ -116,6 +116,7 @@ const initialState: AppState = {
   addAcUnit: () => {},
   addAcUnits: () => {},
   removeAcUnit: () => {},
+  updateAcUnit: () => {},
   updateConfig: () => {},
   importData: () => {},
   isInitialized: false,
@@ -186,6 +187,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setAcUnits(prev => prev.filter(unit => unit.id !== id));
   }, []);
 
+  const updateAcUnit = useCallback((id: string, updatedUnit: ACUnit) => {
+    setAcUnits(prev => prev.map(unit => unit.id === id ? updatedUnit : unit));
+  }, []);
+
   const updateConfig = useCallback((newConfig: Partial<AppConfig>) => {
     setConfig(prev => ({ ...prev, ...newConfig }));
   }, []);
@@ -196,7 +201,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AppContext.Provider value={{ acUnits, config, addAcUnit, addAcUnits, removeAcUnit, updateConfig, importData, isInitialized }}>
+    <AppContext.Provider value={{ acUnits, config, addAcUnit, addAcUnits, removeAcUnit, updateAcUnit, updateConfig, importData, isInitialized }}>
       {children}
     </AppContext.Provider>
   );
