@@ -8,7 +8,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/com
 import { useAppStore } from '@/hooks/use-app-store';
 import { PageHeader } from '@/components/page-header';
 import { AcCard } from '@/components/ac-card';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Settings } from 'lucide-react';
 
 export default function Home() {
   const { acUnits, config } = useAppStore();
@@ -39,12 +39,20 @@ export default function Home() {
         title="AC Unit Dashboard"
         description="View, filter, and manage all your AC units in one place."
       >
-        <Button asChild>
-          <Link href="/add">
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add New AC
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button asChild>
+            <Link href="/add">
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Add New AC
+            </Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/settings">
+              <Settings className="h-4 w-4" />
+              <span className="sr-only">Settings</span>
+            </Link>
+          </Button>
+        </div>
       </PageHeader>
 
       <Card>
