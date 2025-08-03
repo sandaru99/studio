@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { 
-    Building, MapPin, Tag, Wrench, Thermometer, Power, Droplets, Hash, User, Home, Phone
+    Building, MapPin, Tag, Wrench, Thermometer, Power, Database, Hash, User, Home, Phone
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/hooks/use-app-store';
@@ -101,7 +101,7 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
                 <span>{inverter}</span>
             </div>
              <div className={cn("flex items-center gap-2 font-medium uppercase p-1 rounded-md", gasColorClass)}>
-                 <Droplets className="w-4 h-4" />
+                 <Database className="w-4 h-4" />
                 <span>{gasType}</span>
             </div>
         </div>
