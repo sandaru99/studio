@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { ACUnit } from '@/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from './ui/card';
 import { ScrollArea } from './ui/scroll-area';
@@ -15,9 +16,23 @@ export function GroupedAcCard({ units, onCardClick }: GroupedAcCardProps) {
   const { config } = useAppStore();
   const firstUnit = units[0];
   const { company, companyCity } = firstUnit;
+  const [mapPreviewUrl, setMapPreviewUrl] = useState('');
 
   const companyInfo = config.companies.find(c => c.name === company);
   const companyColor = companyInfo?.color || '#A0A0A0';
+
+  useEffect(() => {
+    if (firstUnit.mapLocation && firstUnit.mapLocation.includes('@')) {
+      const parts = firstUnit.mapLocation.split('@')[1]?.split(',');
+      if (parts?.length >= 2) {
+        const lat = parts[0];
+        const lng = parts[1];
+        setMapPreviewUrl(`https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&output=embed`);
+      }
+    } else {
+      setMapPreviewUrl('');
+    }
+  }, [firstUnit.mapLocation]);
 
   return (
     <Card 
@@ -57,7 +72,12 @@ export function GroupedAcCard({ units, onCardClick }: GroupedAcCardProps) {
         </CardContent>
       </ScrollArea>
       {firstUnit.mapLocation && (
-        <CardFooter className="p-4 pt-0">
+        <CardFooter className="p-4 pt-0 flex-col items-start gap-4">
+           {mapPreviewUrl && (
+             <div className="rounded-lg overflow-hidden border w-full h-40">
+                <iframe width="100%" height="100%" style={{ border: 0 }} loading="lazy" allowFullScreen src={mapPreviewUrl}></iframe>
+             </div>
+           )}
            <a
             href={firstUnit.mapLocation}
             target="_blank"
