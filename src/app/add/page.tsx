@@ -5,6 +5,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,7 +17,7 @@ import { Separator } from '@/components/ui/separator';
 import { useAppStore } from '@/hooks/use-app-store';
 import { useToast } from '@/hooks/use-toast';
 import { PageHeader } from '@/components/page-header';
-import { PlusCircle, Trash2, MapPin } from 'lucide-react';
+import { PlusCircle, Trash2, MapPin, Home } from 'lucide-react';
 
 const acUnitSchema = z.object({
   modelNumber: z.string().min(1, 'Model number is required'),
@@ -110,7 +111,14 @@ export default function AddAcPage() {
             <PageHeader
                 title="Add New AC Units"
                 description="Fill in the details for the new AC units."
-            />
+            >
+                <Button asChild variant="outline">
+                    <Link href="/">
+                        <Home className="mr-2 h-4 w-4" />
+                        Back to Home
+                    </Link>
+                </Button>
+            </PageHeader>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <Card>
