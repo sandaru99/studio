@@ -80,7 +80,7 @@ export default function EditAcPage() {
     });
 
     useEffect(() => {
-        if (!isInitialized) return;
+        if (!isInitialized || acUnits.length === 0) return;
 
         const unitToEdit = acUnits.find(unit => unit.id === id);
         if (unitToEdit) {
@@ -268,5 +268,3 @@ export default function EditAcPage() {
         </div>
     );
 }
-
-    
