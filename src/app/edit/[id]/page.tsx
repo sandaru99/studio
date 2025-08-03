@@ -18,6 +18,7 @@ import { useAppStore } from '@/hooks/use-app-store';
 import { useToast } from '@/hooks/use-toast';
 import { PageHeader } from '@/components/page-header';
 import { MapPin, Home } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const formSchema = z.object({
   id: z.string(),
@@ -59,6 +60,23 @@ export default function EditAcPage() {
 
     const form = useForm<FormData>({
         resolver: zodResolver(formSchema),
+        defaultValues: {
+            company: '',
+            companyCity: '',
+            mapLocation: '',
+            modelNumber: '',
+            serialNumber: '',
+            inverter: '',
+            brand: '',
+            btu: 0,
+            gasType: '',
+            acType: '',
+            status: '',
+            installLocation: '',
+            customerName: '',
+            customerAddress: '',
+            customerContact: '',
+        }
     });
 
     useEffect(() => {
@@ -91,7 +109,7 @@ export default function EditAcPage() {
     }, [mapLocationWatcher]);
 
     const onSubmit = (data: FormData) => {
-        updateAcUnit(data.id, data);
+        updateAcUnit(String(id), data);
         toast({
             title: "Success! 🎉",
             description: `AC unit ${data.serialNumber} has been updated.`,
@@ -99,8 +117,25 @@ export default function EditAcPage() {
         router.push('/');
     };
     
-    if (isLoading) {
-        return <div className="p-8">Loading AC unit details...</div>
+    if (isLoading || !isInitialized) {
+        return (
+            <div className="flex-1 flex-col p-4 md:p-6 lg:p-8 gap-6 space-y-8">
+                <PageHeader title="Edit AC Unit" description="Loading unit details...">
+                     <Skeleton className="h-10 w-36" />
+                </PageHeader>
+                <Card>
+                    <CardHeader><CardTitle>Unit Details</CardTitle></CardHeader>
+                    <CardContent className="space-y-6">
+                        <div className="grid md:grid-cols-2 gap-6"><Skeleton className="h-10" /><Skeleton className="h-10" /></div>
+                        <div className="grid md:grid-cols-2 gap-6"><Skeleton className="h-10" /><Skeleton className="h-64" /></div>
+                        <Separator />
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {[...Array(9)].map((_, i) => <Skeleton key={i} className="h-10" />)}
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        )
     }
 
     return (
@@ -201,7 +236,7 @@ export default function EditAcPage() {
                                         <FormItem><FormLabel>AC Brand</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select brand" /></SelectTrigger></FormControl><SelectContent>{config.brands.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                                     )} />
                                     <FormField name="btu" control={form.control} render={({ field }) => (
-                                        <FormItem><FormLabel>BTU Capacity</FormLabel><Select onValueChange={field.onChange} value={String(field.value)}><FormControl><SelectTrigger><SelectValue placeholder="Select capacity" /></SelectTrigger></FormControl><SelectContent>{config.btuCapacities.map(b => <SelectItem key={b} value={String(b)}>{b}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
+                                        <FormItem><FormLabel>BTU Capacity</FormLabel><Select onValueChange={(v) => field.onChange(Number(v))} value={String(field.value)}><FormControl><SelectTrigger><SelectValue placeholder="Select capacity" /></SelectTrigger></FormControl><SelectContent>{config.btuCapacities.map(b => <SelectItem key={b} value={String(b)}>{b}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                                     )} />
                                     <FormField name="gasType" control={form.control} render={({ field }) => (
                                         <FormItem><FormLabel>Gas Type</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select gas type" /></SelectTrigger></FormControl><SelectContent>{config.gasTypes.map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
@@ -233,3 +268,5 @@ export default function EditAcPage() {
         </div>
     );
 }
+
+    
