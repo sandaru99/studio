@@ -56,6 +56,19 @@ export function GroupedAcCard({ units, onCardClick }: GroupedAcCardProps) {
           </div>
         </CardContent>
       </ScrollArea>
+      {firstUnit.mapLocation && (
+        <CardFooter className="p-4 pt-0">
+           <a
+            href={firstUnit.mapLocation}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center justify-center gap-2 text-sm text-primary hover:underline"
+          >
+            <MapPin className="w-4 h-4" />
+            View Location on Google Maps
+          </a>
+        </CardFooter>
+      )}
     </Card>
   );
 }

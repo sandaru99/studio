@@ -32,7 +32,7 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
   const { config } = useAppStore();
   const { 
       status, company, companyCity, brand, btu, modelNumber, serialNumber, installLocation, 
-      acType, inverter, gasType, customerName, customerAddress, customerContact 
+      acType, inverter, gasType, customerName, customerAddress, customerContact, mapLocation
   } = unit;
   const currentStatus = statusConfig[status as keyof typeof statusConfig] || statusConfig.removed;
   const gasColorClass = gasTypeColorMap[gasType.toLowerCase()] || '';
@@ -122,6 +122,20 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
             </>
         )}
       </CardContent>
+       {mapLocation && (
+        <CardFooter className={isGrouped ? 'pt-2 pb-0' : ''}>
+          <a
+            href={mapLocation}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="w-full flex items-center justify-center gap-2 text-sm text-primary hover:underline"
+          >
+            <MapPin className="w-4 h-4" />
+            View on Google Maps
+          </a>
+        </CardFooter>
+      )}
     </CardComponent>
   );
 }
