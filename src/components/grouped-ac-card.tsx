@@ -65,7 +65,7 @@ export function GroupedAcCard({ units, onCardClick }: GroupedAcCardProps) {
             className="w-full flex items-center justify-center gap-2 text-sm text-primary hover:underline"
           >
             <MapPin className="w-4 h-4" />
-            View Location on Google Maps
+            Google Map Location
           </a>
         </CardFooter>
       )}

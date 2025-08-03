@@ -122,7 +122,7 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
             </>
         )}
       </CardContent>
-       {mapLocation && (
+       {mapLocation && !isGrouped && (
         <CardFooter className={isGrouped ? 'pt-2 pb-0' : ''}>
           <a
             href={mapLocation}
