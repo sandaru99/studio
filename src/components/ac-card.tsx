@@ -37,8 +37,15 @@ export function AcCard({ unit }: AcCardProps) {
   const companyColor = companyInfo?.color || '#A0A0A0';
 
   return (
-    <Card className="flex flex-col h-full hover:shadow-xl transition-shadow duration-300 bg-card">
-      <CardHeader style={{ borderTop: `4px solid ${companyColor}` }}>
+    <Card 
+        className="flex flex-col h-full hover:shadow-xl transition-shadow duration-300 bg-card"
+        style={{
+            borderWidth: '1px',
+            borderColor: companyColor,
+            borderTopWidth: '4px',
+        }}
+    >
+      <CardHeader>
         <div className="flex justify-between items-start gap-2">
           <div>
             <CardTitle className="text-lg font-bold capitalize" style={{ color: companyColor }}>{company}</CardTitle>
