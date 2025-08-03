@@ -2,7 +2,9 @@ import { ACUnit } from '@/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from './ui/card';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
-import { Building, MapPin, Tag, Wrench, Thermometer, Info } from 'lucide-react';
+import { 
+    Building, MapPin, Tag, Wrench, Thermometer, Info, Power, Droplets, Hash, User, Home, Phone, ExternalLink 
+} from 'lucide-react';
 
 interface AcCardProps {
   unit: ACUnit;
@@ -15,7 +17,10 @@ const statusConfig = {
 } as const;
 
 export function AcCard({ unit }: AcCardProps) {
-  const { status, company, companyCity, brand, btu, modelNumber, installLocation, acType } = unit;
+  const { 
+      status, company, companyCity, brand, btu, modelNumber, serialNumber, installLocation, 
+      acType, inverter, gasType, mapLocation, customerName, customerAddress, customerContact 
+  } = unit;
   const currentStatus = statusConfig[status as keyof typeof statusConfig] || statusConfig.removed;
 
   return (
@@ -33,14 +38,15 @@ export function AcCard({ unit }: AcCardProps) {
         </div>
       </CardHeader>
 
-      <CardContent className="flex-grow space-y-3 text-sm">
-         <div className="flex items-center gap-3 p-3 rounded-lg bg-muted">
-            <div className="bg-primary/10 p-2 rounded-md">
-                <Tag className="w-6 h-6 text-primary" />
+      <CardContent className="flex-grow space-y-4 text-sm">
+         <div className="flex items-start gap-3 p-3 rounded-lg bg-muted">
+            <div className="bg-primary/10 p-2 rounded-md mt-1">
+                <Tag className="w-5 h-5 text-primary" />
             </div>
             <div>
                 <p className="font-semibold text-primary capitalize">{brand}</p>
                 <p className="text-muted-foreground">{modelNumber}</p>
+                <p className="text-muted-foreground flex items-center gap-2 pt-1"><Hash className="w-3 h-3"/> {serialNumber}</p>
             </div>
         </div>
 
@@ -53,15 +59,41 @@ export function AcCard({ unit }: AcCardProps) {
                  <Wrench className="w-4 h-4" />
                 <span>{acType}</span>
             </div>
+            <div className="flex items-center gap-2 text-muted-foreground capitalize">
+                 <Power className="w-4 h-4" />
+                <span>{inverter}</span>
+            </div>
+             <div className="flex items-center gap-2 text-muted-foreground uppercase">
+                 <Droplets className="w-4 h-4" />
+                <span>{gasType}</span>
+            </div>
         </div>
+
+        {customerName && (
+            <>
+                <Separator />
+                <div className="space-y-2">
+                     <h4 className="font-semibold text-primary">Customer Details</h4>
+                     <div className="flex items-center gap-2 text-muted-foreground"><User className="w-4 h-4"/> {customerName}</div>
+                     <div className="flex items-center gap-2 text-muted-foreground"><Home className="w-4 h-4"/> {customerAddress}</div>
+                     <div className="flex items-center gap-2 text-muted-foreground"><Phone className="w-4 h-4"/> {customerContact}</div>
+                </div>
+            </>
+        )}
+
       </CardContent>
 
       <Separator />
 
-      <CardFooter className="p-4">
+      <CardFooter className="p-4 flex justify-between items-center">
         <div className="flex items-center gap-2 text-sm text-muted-foreground w-full">
             <Building className="w-4 h-4" />
-            <p className="truncate" title={installLocation}>{installLocation}</p>
+            <p className="truncate flex-1" title={installLocation}>{installLocation}</p>
+             {mapLocation && (
+              <a href={mapLocation} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            )}
         </div>
       </CardFooter>
     </Card>
