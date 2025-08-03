@@ -33,7 +33,7 @@ export function SiteSidebar() {
       <SidebarMenu className="flex-1 px-4">
         {menuItems.map(item => (
           <SidebarMenuItem key={item.href}>
-            <Link href={item.href} passHref legacyBehavior>
+            <Link href={item.href} passHref>
               <SidebarMenuButton isActive={pathname === item.href}>
                 <span className="text-lg">{item.emoji}</span>
                 <span>{item.label}</span>
