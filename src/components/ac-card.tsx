@@ -18,15 +18,15 @@ export function AcCard({ unit }: AcCardProps) {
       <CardHeader>
         <div className="flex justify-between items-start">
             <div>
-                <CardTitle className="text-lg">{unit.modelNumber}</CardTitle>
-                <CardDescription>{unit.brand} - {unit.btu} BTU</CardDescription>
+                <CardTitle className="text-lg">{unit.brand} {unit.btu} BTU</CardTitle>
+                <CardDescription>{unit.company}</CardDescription>
             </div>
           <Badge variant={statusColors[unit.status] || 'secondary'} className="capitalize">{unit.status}</Badge>
         </div>
       </CardHeader>
       <CardContent className="flex-grow grid grid-cols-2 gap-2 text-sm">
-        <div className="font-semibold text-muted-foreground">Company:</div>
-        <div>{unit.company}</div>
+        <div className="font-semibold text-muted-foreground">Model:</div>
+        <div>{unit.modelNumber}</div>
 
         <div className="font-semibold text-muted-foreground">City:</div>
         <div>{unit.companyCity}</div>
