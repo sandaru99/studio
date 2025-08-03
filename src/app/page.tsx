@@ -7,8 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { useAppStore } from '@/hooks/use-app-store';
 import { PageHeader } from '@/components/page-header';
-import { AcCard } from '@/components/ac-card';
+import { CompanyGroupCard } from '@/components/company-group-card';
 import { PlusCircle, Settings } from 'lucide-react';
+import { ACUnit } from '@/types';
 
 export default function Home() {
   const { acUnits, config } = useAppStore();
@@ -30,6 +31,13 @@ export default function Home() {
       return companyMatch && cityMatch && statusMatch;
     });
   }, [acUnits, filters]);
+
+  const groupedByCompany = useMemo(() => {
+    return filteredAcUnits.reduce((acc, unit) => {
+      (acc[unit.company] = acc[unit.company] || []).push(unit);
+      return acc;
+    }, {} as Record<string, ACUnit[]>);
+  }, [filteredAcUnits]);
 
   const uniqueCities = useMemo(() => [...new Set(acUnits.map(unit => unit.companyCity))], [acUnits]);
 
@@ -104,11 +112,13 @@ export default function Home() {
         </CardContent>
       </Card>
       
-      {filteredAcUnits.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredAcUnits.map(unit => (
-            <AcCard key={unit.id} unit={unit} />
-          ))}
+      {Object.keys(groupedByCompany).length > 0 ? (
+        <div className="space-y-6">
+            {Object.entries(groupedByCompany)
+              .sort(([companyA], [companyB]) => companyA.localeCompare(companyB))
+              .map(([company, units]) => (
+                <CompanyGroupCard key={company} companyName={company} units={units} />
+            ))}
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center text-center py-20 rounded-lg border border-dashed">

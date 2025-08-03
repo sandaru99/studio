@@ -92,7 +92,7 @@ export function AcCard({ unit }: AcCardProps) {
         {customerName && (
             <>
                 <Separator />
-                <div className="space-y-2">
+                <div className="space-y-2 pt-4">
                      <h4 className="font-semibold" style={{color: companyColor}}>Customer Details</h4>
                      <div className="flex items-center gap-2 text-muted-foreground"><User className="w-4 h-4"/> {customerName}</div>
                      <div className="flex items-center gap-2 text-muted-foreground"><Home className="w-4 h-4"/> {customerAddress}</div>
