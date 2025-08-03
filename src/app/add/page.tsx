@@ -27,7 +27,6 @@ const acUnitSchema = z.object({
   gasType: z.string().min(1, 'Gas type is required'),
   acType: z.string().min(1, 'AC type is required'),
   status: z.string().min(1, 'Status is required'),
-  mapLocation: z.string().url('Must be a valid Google Maps URL').or(z.literal('')),
   installLocation: z.string().min(1, 'Install location is required'),
   customerName: z.string().optional(),
   customerAddress: z.string().optional(),
@@ -37,6 +36,7 @@ const acUnitSchema = z.object({
 const formSchema = z.object({
   company: z.string().min(1, 'Company is required'),
   companyCity: z.string().min(1, 'Company city is required'),
+  mapLocation: z.string().url('Must be a valid Google Maps URL').or(z.literal('')),
   acUnits: z.array(acUnitSchema).min(1, 'At least one AC unit is required'),
 }).refine(data => {
     if (data.company === 'customer') {
@@ -61,7 +61,8 @@ export default function AddAcPage() {
         defaultValues: {
             company: '',
             companyCity: '',
-            acUnits: [{ modelNumber: '', serialNumber: '', inverter: '', brand: '', btu: 0, gasType: '', acType: '', status: '', mapLocation: '', installLocation: '' }],
+            mapLocation: '',
+            acUnits: [{ modelNumber: '', serialNumber: '', inverter: '', brand: '', btu: 0, gasType: '', acType: '', status: '', installLocation: '' }],
         },
     });
 
@@ -71,7 +72,7 @@ export default function AddAcPage() {
     });
 
     const companyWatcher = form.watch('company');
-    const mapLocationWatcher = form.watch('acUnits.0.mapLocation');
+    const mapLocationWatcher = form.watch('mapLocation');
 
     useEffect(() => {
         if(mapLocationWatcher && mapLocationWatcher.includes('@')) {
@@ -91,6 +92,7 @@ export default function AddAcPage() {
             ...unit,
             company: data.company,
             companyCity: data.companyCity,
+            mapLocation: data.mapLocation,
         }));
         addAcUnits(unitsToAdd);
         toast({
@@ -113,28 +115,51 @@ export default function AddAcPage() {
                             <CardTitle>Common Details</CardTitle>
                             <CardDescription>This information will apply to all AC units added in this form.</CardDescription>
                         </CardHeader>
-                        <CardContent className="grid md:grid-cols-2 gap-6">
-                            <FormField name="company" control={form.control} render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Company / Owner</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger><SelectValue placeholder="Select a company" /></SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {config.companies.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-                            <FormField name="companyCity" control={form.control} render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Company City</FormLabel>
-                                    <FormControl><Input placeholder="e.g., Colombo" {...field} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
+                        <CardContent className="space-y-6">
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <FormField name="company" control={form.control} render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Company / Owner</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger><SelectValue placeholder="Select a company" /></SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {config.companies.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                                <FormField name="companyCity" control={form.control} render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Company City</FormLabel>
+                                        <FormControl><Input placeholder="e.g., Colombo" {...field} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <FormField name="mapLocation" control={form.control} render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Google Map Location</FormLabel>
+                                        <FormControl><Input placeholder="Paste Google Maps URL here" {...field} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                                {mapPreviewUrl ? (
+                                    <div className="rounded-lg overflow-hidden border">
+                                        <iframe width="100%" height="250" style={{ border: 0 }} loading="lazy" allowFullScreen src={mapPreviewUrl}></iframe>
+                                    </div>
+                                ) : (
+                                    <div className="rounded-lg border border-dashed flex items-center justify-center h-[250px]">
+                                        <div className="text-center text-muted-foreground">
+                                            <MapPin className="mx-auto h-8 w-8 mb-2"/>
+                                            <p>Map preview will appear here</p>
+                                        </div>
+                                    </div>
+                                ) }
+                            </div>
                         </CardContent>
                     </Card>
 
@@ -184,7 +209,7 @@ export default function AddAcPage() {
                                         <FormItem><FormLabel>Status</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl><SelectContent>{config.statuses.map(s => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                                     )} />
                                     <FormField name={`acUnits.${index}.installLocation`} control={form.control} render={({ field }) => (
-                                        <FormItem className="lg:col-span-1">
+                                        <FormItem className="lg:col-span-3">
                                             <FormLabel>Install Location</FormLabel>
                                             <FormControl><Textarea placeholder="e.g., 2nd Floor, Manager's Office" {...field} /></FormControl>
                                             <FormMessage />
@@ -201,34 +226,12 @@ export default function AddAcPage() {
                                     </div>
                                   </>
                                 )}
-                                <Separator />
-                                <div className="grid md:grid-cols-2 gap-6">
-                                  <FormField name={`acUnits.${index}.mapLocation`} control={form.control} render={({ field }) => (
-                                      <FormItem>
-                                          <FormLabel>Google Map Location</FormLabel>
-                                          <FormControl><Input placeholder="Paste Google Maps URL here" {...field} /></FormControl>
-                                          <FormMessage />
-                                      </FormItem>
-                                  )} />
-                                  {mapPreviewUrl && index === 0 ? (
-                                    <div className="rounded-lg overflow-hidden border">
-                                        <iframe width="100%" height="250" style={{ border: 0 }} loading="lazy" allowFullScreen src={mapPreviewUrl}></iframe>
-                                    </div>
-                                  ) : index === 0 ? (
-                                    <div className="rounded-lg border border-dashed flex items-center justify-center h-[250px]">
-                                        <div className="text-center text-muted-foreground">
-                                            <MapPin className="mx-auto h-8 w-8 mb-2"/>
-                                            <p>Map preview will appear here</p>
-                                        </div>
-                                    </div>
-                                  ) : null }
-                                </div>
                             </CardContent>
                         </Card>
                     ))}
 
                     <div className="flex justify-between items-center">
-                        <Button type="button" variant="outline" onClick={() => append({ modelNumber: '', serialNumber: '', inverter: '', brand: '', btu: 0, gasType: '', acType: '', status: '', mapLocation: '', installLocation: '' })}>
+                        <Button type="button" variant="outline" onClick={() => append({ modelNumber: '', serialNumber: '', inverter: '', brand: '', btu: 0, gasType: '', acType: '', status: '', installLocation: '' })}>
                             <PlusCircle className="mr-2 h-4 w-4" />
                             Add Another AC
                         </Button>
