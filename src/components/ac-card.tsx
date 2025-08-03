@@ -3,10 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { 
-    Building, MapPin, Tag, Wrench, Thermometer, Power, Droplets, Hash, User, Home, Phone
+    Building, MapPin, Tag, Wrench, Thermometer, Power, Droplets, Hash, User, Home, Phone, Pencil, Trash2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/hooks/use-app-store';
+import { Button } from './ui/button';
 
 interface AcCardProps {
   unit: ACUnit;
@@ -27,9 +28,9 @@ const gasTypeColorMap: { [key: string]: string } = {
 
 
 export function AcCard({ unit, isGrouped = false }: AcCardProps) {
-  const { config } = useAppStore();
+  const { config, removeAcUnit } = useAppStore();
   const { 
-      status, company, companyCity, brand, btu, modelNumber, serialNumber, installLocation, 
+      id, status, company, companyCity, brand, btu, modelNumber, serialNumber, installLocation, 
       acType, inverter, gasType, customerName, customerAddress, customerContact 
   } = unit;
   const currentStatus = statusConfig[status as keyof typeof statusConfig] || statusConfig.removed;
@@ -41,7 +42,7 @@ export function AcCard({ unit, isGrouped = false }: AcCardProps) {
 
   return (
     <CardComponent 
-        className={!isGrouped ? "flex flex-col h-full hover:shadow-xl transition-shadow duration-300 bg-card" : ""}
+        className={cn("flex flex-col h-full bg-card", !isGrouped && "hover:shadow-xl transition-shadow duration-300")}
         style={!isGrouped ? {
             borderWidth: '1px',
             borderColor: companyColor,
@@ -117,16 +118,17 @@ export function AcCard({ unit, isGrouped = false }: AcCardProps) {
 
       </CardContent>
 
-      {!isGrouped && <Separator />}
+      <CardFooter className={cn("pt-4 flex justify-end gap-2", isGrouped ? "p-0" : "p-4")}>
+        <Button variant="outline" size="sm">
+            <Pencil className="w-3 h-3 mr-2" />
+            Edit
+        </Button>
+        <Button variant="destructive" size="sm" onClick={() => removeAcUnit(id)}>
+            <Trash2 className="w-3 h-3 mr-2" />
+            Delete
+        </Button>
+      </CardFooter>
 
-      {!isGrouped && (
-        <CardFooter className="p-4 flex justify-between items-center">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground w-full">
-                <Building className="w-4 h-4" />
-                <p className="truncate flex-1" title={installLocation}>{installLocation}</p>
-            </div>
-        </CardFooter>
-      )}
     </CardComponent>
   );
 }

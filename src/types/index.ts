@@ -27,6 +27,7 @@ export interface AppState {
   config: AppConfig;
   addAcUnit: (unit: Omit<ACUnit, 'id'>) => void;
   addAcUnits: (units: Omit<ACUnit, 'id'>[]) => void;
+  removeAcUnit: (id: string) => void;
   updateConfig: (newConfig: Partial<AppConfig>) => void;
   importData: (data: { acUnits: ACUnit[], config: AppConfig }) => void;
   isInitialized: boolean;
