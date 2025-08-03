@@ -1,3 +1,4 @@
+
 import { ACUnit } from '@/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from './ui/card';
 import { Badge } from './ui/badge';
@@ -81,8 +82,8 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
             )}
             <div>
                 { !isGrouped && <p className="font-semibold text-primary capitalize">{brand}</p>}
-                <p className="text-muted-foreground">{modelNumber}</p>
-                <p className="text-muted-foreground flex items-center gap-2 pt-1"><Hash className="w-3 h-3"/> {serialNumber}</p>
+                <p className="font-bold">{modelNumber}</p>
+                <p className="font-bold flex items-center gap-2 pt-1"><Hash className="w-3 h-3"/> {serialNumber}</p>
             </div>
         </div>
 
