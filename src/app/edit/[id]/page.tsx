@@ -80,15 +80,15 @@ export default function EditAcPage() {
     });
 
     useEffect(() => {
-        if (!isInitialized || acUnits.length === 0) return;
-
-        const unitToEdit = acUnits.find(unit => unit.id === id);
-        if (unitToEdit) {
-            form.reset(unitToEdit);
-            setIsLoading(false);
-        } else {
-            toast({ variant: 'destructive', title: "Error", description: "AC Unit not found." });
-            router.push('/');
+        if (isInitialized) {
+            const unitToEdit = acUnits.find(unit => unit.id === id);
+            if (unitToEdit) {
+                form.reset(unitToEdit);
+                setIsLoading(false);
+            } else {
+                toast({ variant: 'destructive', title: "Error", description: "AC Unit not found." });
+                router.push('/');
+            }
         }
     }, [id, acUnits, isInitialized, form, router, toast]);
     
@@ -117,9 +117,9 @@ export default function EditAcPage() {
         router.push('/');
     };
     
-    if (isLoading || !isInitialized) {
+    if (isLoading) {
         return (
-            <div className="flex-1 flex-col p-4 md:p-6 lg:p-8 gap-6 space-y-8">
+            <div className="flex-1 flex flex-col p-4 md:p-6 lg:p-8 gap-6 space-y-8">
                 <PageHeader title="Edit AC Unit" description="Loading unit details...">
                      <Skeleton className="h-10 w-36" />
                 </PageHeader>
@@ -127,13 +127,16 @@ export default function EditAcPage() {
                     <CardHeader><CardTitle>Unit Details</CardTitle></CardHeader>
                     <CardContent className="space-y-6">
                         <div className="grid md:grid-cols-2 gap-6"><Skeleton className="h-10" /><Skeleton className="h-10" /></div>
-                        <div className="grid md:grid-cols-2 gap-6"><Skeleton className="h-10" /><Skeleton className="h-64" /></div>
+                        <div className="grid md:grid-cols-2 gap-6"><Skeleton className="h-10" /><Skeleton className="h-[250px]" /></div>
                         <Separator />
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {[...Array(9)].map((_, i) => <Skeleton key={i} className="h-10" />)}
                         </div>
                     </CardContent>
                 </Card>
+                 <div className="flex justify-end items-center">
+                    <Skeleton className="h-10 w-28" />
+                </div>
             </div>
         )
     }
@@ -233,7 +236,7 @@ export default function EditAcPage() {
                                         <FormItem><FormLabel>Inverter/Non-Inverter</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger></FormControl><SelectContent>{config.inverterOptions.map(i => <SelectItem key={i} value={i} className="capitalize">{i}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                                     )} />
                                     <FormField name="brand" control={form.control} render={({ field }) => (
-                                        <FormItem><FormLabel>AC Brand</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select brand" /></SelectTrigger></FormControl><SelectContent>{config.brands.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
+                                        <FormItem><FormLabel>AC Brand</FormLabel><Select onValuechange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select brand" /></SelectTrigger></FormControl><SelectContent>{config.brands.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                                     )} />
                                     <FormField name="btu" control={form.control} render={({ field }) => (
                                         <FormItem><FormLabel>BTU Capacity</FormLabel><Select onValueChange={(v) => field.onChange(Number(v))} value={String(field.value)}><FormControl><SelectTrigger><SelectValue placeholder="Select capacity" /></SelectTrigger></FormControl><SelectContent>{config.btuCapacities.map(b => <SelectItem key={b} value={String(b)}>{b}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
