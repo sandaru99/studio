@@ -7,8 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { useAppStore } from '@/hooks/use-app-store';
 import { PageHeader } from '@/components/page-header';
-import { AcCard } from '@/components/ac-card';
+import { GroupedAcCard } from '@/components/grouped-ac-card';
 import { PlusCircle, Settings } from 'lucide-react';
+import { ACUnit } from '@/types';
 
 export default function Home() {
   const { acUnits, config } = useAppStore();
@@ -30,8 +31,20 @@ export default function Home() {
         const statusMatch = filters.status === 'all' || unit.status === filters.status;
         return companyMatch && cityMatch && statusMatch;
       })
-      .sort((a, b) => a.company.localeCompare(b.company));
+      .sort((a, b) => a.company.localeCompare(b.company) || a.companyCity.localeCompare(b.companyCity));
   }, [acUnits, filters]);
+
+  const groupedUnits = useMemo(() => {
+    const groups: { [key: string]: ACUnit[] } = {};
+    filteredAcUnits.forEach(unit => {
+        const key = `${unit.company}-${unit.companyCity}`;
+        if (!groups[key]) {
+            groups[key] = [];
+        }
+        groups[key].push(unit);
+    });
+    return Object.values(groups);
+  }, [filteredAcUnits]);
 
   const uniqueCities = useMemo(() => [...new Set(acUnits.map(unit => unit.companyCity))], [acUnits]);
 
@@ -106,10 +119,10 @@ export default function Home() {
         </CardContent>
       </Card>
       
-      {filteredAcUnits.length > 0 ? (
+      {groupedUnits.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredAcUnits.map(unit => (
-            <AcCard key={unit.id} unit={unit} />
+          {groupedUnits.map((group, index) => (
+             <GroupedAcCard key={`${group[0].company}-${group[0].companyCity}-${index}`} units={group} />
           ))}
         </div>
       ) : (

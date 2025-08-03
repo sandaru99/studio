@@ -3,13 +3,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { 
-    Building, MapPin, Tag, Wrench, Thermometer, Info, Power, Droplets, Hash, User, Home, Phone
+    Building, MapPin, Tag, Wrench, Thermometer, Power, Droplets, Hash, User, Home, Phone
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/hooks/use-app-store';
 
 interface AcCardProps {
   unit: ACUnit;
+  isGrouped?: boolean;
 }
 
 const statusConfig = {
@@ -25,46 +26,55 @@ const gasTypeColorMap: { [key: string]: string } = {
 };
 
 
-export function AcCard({ unit }: AcCardProps) {
+export function AcCard({ unit, isGrouped = false }: AcCardProps) {
   const { config } = useAppStore();
   const { 
       status, company, companyCity, brand, btu, modelNumber, serialNumber, installLocation, 
-      acType, inverter, gasType, mapLocation, customerName, customerAddress, customerContact 
+      acType, inverter, gasType, customerName, customerAddress, customerContact 
   } = unit;
   const currentStatus = statusConfig[status as keyof typeof statusConfig] || statusConfig.removed;
   const gasColorClass = gasTypeColorMap[gasType.toLowerCase()] || '';
   const companyInfo = config.companies.find(c => c.name === company);
   const companyColor = companyInfo?.color || '#A0A0A0';
 
+  const CardComponent = isGrouped ? 'div' : Card;
+
   return (
-    <Card 
-        className="flex flex-col h-full hover:shadow-xl transition-shadow duration-300 bg-card"
-        style={{
+    <CardComponent 
+        className={!isGrouped ? "flex flex-col h-full hover:shadow-xl transition-shadow duration-300 bg-card" : ""}
+        style={!isGrouped ? {
             borderWidth: '1px',
             borderColor: companyColor,
             borderTopWidth: '4px',
-        }}
+        } : {}}
     >
-      <CardHeader>
+      <CardHeader className={isGrouped ? 'pb-2' : ''}>
         <div className="flex justify-between items-start gap-2">
           <div>
-            <CardTitle className="text-lg font-bold capitalize" style={{ color: companyColor }}>{company}</CardTitle>
-            <CardDescription className="flex items-center gap-2 text-sm text-muted-foreground">
-              <MapPin className="w-4 h-4" />
-              <span>{companyCity}</span>
-            </CardDescription>
+            {!isGrouped && (
+                <>
+                <CardTitle className="text-lg font-bold capitalize" style={{ color: companyColor }}>{company}</CardTitle>
+                <CardDescription className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <MapPin className="w-4 h-4" />
+                  <span>{companyCity}</span>
+                </CardDescription>
+                </>
+            )}
+            {isGrouped && <p className="font-semibold text-primary capitalize">{brand}</p>}
           </div>
           <Badge variant={currentStatus.variant} className="capitalize shrink-0">{currentStatus.label}</Badge>
         </div>
       </CardHeader>
 
       <CardContent className="flex-grow space-y-4 text-sm">
-         <div className="flex items-start gap-3 p-3 rounded-lg bg-muted">
-            <div className="bg-primary/10 p-2 rounded-md mt-1">
-                <Tag className="w-5 h-5 text-primary" />
-            </div>
+         <div className={cn("flex items-start gap-3 p-3 rounded-lg", !isGrouped && "bg-muted")}>
+            { !isGrouped && (
+                <div className="bg-primary/10 p-2 rounded-md mt-1">
+                    <Tag className="w-5 h-5 text-primary" />
+                </div>
+            )}
             <div>
-                <p className="font-semibold text-primary capitalize">{brand}</p>
+                { !isGrouped && <p className="font-semibold text-primary capitalize">{brand}</p>}
                 <p className="text-muted-foreground">{modelNumber}</p>
                 <p className="text-muted-foreground flex items-center gap-2 pt-1"><Hash className="w-3 h-3"/> {serialNumber}</p>
             </div>
@@ -88,6 +98,10 @@ export function AcCard({ unit }: AcCardProps) {
                 <span>{gasType}</span>
             </div>
         </div>
+         <div className="flex items-center gap-2 text-sm text-muted-foreground w-full pt-2">
+            <Building className="w-4 h-4" />
+            <p className="truncate flex-1" title={installLocation}>{installLocation}</p>
+        </div>
 
         {customerName && (
             <>
@@ -103,14 +117,16 @@ export function AcCard({ unit }: AcCardProps) {
 
       </CardContent>
 
-      <Separator />
+      {!isGrouped && <Separator />}
 
-      <CardFooter className="p-4 flex justify-between items-center">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground w-full">
-            <Building className="w-4 h-4" />
-            <p className="truncate flex-1" title={installLocation}>{installLocation}</p>
-        </div>
-      </CardFooter>
-    </Card>
+      {!isGrouped && (
+        <CardFooter className="p-4 flex justify-between items-center">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground w-full">
+                <Building className="w-4 h-4" />
+                <p className="truncate flex-1" title={installLocation}>{installLocation}</p>
+            </div>
+        </CardFooter>
+      )}
+    </CardComponent>
   );
 }
