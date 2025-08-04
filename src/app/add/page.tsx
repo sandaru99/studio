@@ -231,7 +231,7 @@ export default function AddAcPage() {
                                         <FormItem><FormLabel>AC Type</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select AC type" /></SelectTrigger></FormControl><SelectContent>{config.acTypes.map(t => <SelectItem key={t} value={t} className="capitalize">{t}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                                     )} />
                                     <FormField name={`acUnits.${index}.status`} control={form.control} render={({ field }) => (
-                                        <FormItem><FormLabel>Status</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl><SelectContent>{config.statuses.map(s => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
+                                        <FormItem><FormLabel>Status</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl><SelectContent>{config.statuses.map(s => <SelectItem key={s.name} value={s.name} className="capitalize">{s.name}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                                     )} />
                                     <FormField name={`acUnits.${index}.installLocation`} control={form.control} render={({ field }) => (
                                         <FormItem className="lg:col-span-3">

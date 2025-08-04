@@ -16,12 +16,6 @@ interface AcCardProps {
   onClick?: () => void;
 }
 
-const statusConfig = {
-  active: { variant: 'default', label: 'Active' },
-  breakdown: { variant: 'destructive', label: 'Breakdown' },
-  removed: { variant: 'secondary', label: 'Removed' },
-} as const;
-
 const gasTypeColorMap: { [key: string]: string } = {
   r22: 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200',
   r410a: 'bg-pink-100 dark:bg-pink-900/50 text-pink-800 dark:text-pink-200',
@@ -37,7 +31,10 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
       status, company, companyCity, brand, btu, modelNumber, serialNumber, installLocation, 
       acType, inverter, gasType, customerName, customerAddress, customerContact, mapLocation
   } = unit;
-  const currentStatus = statusConfig[status as keyof typeof statusConfig] || statusConfig.removed;
+  
+  const statusInfo = config.statuses.find(s => s.name === status);
+  const statusColor = statusInfo?.color || '#A0A0A0';
+
   const gasColorClass = gasTypeColorMap[gasType.toLowerCase()] || '';
   const companyInfo = config.companies.find(c => c.name === company);
   const companyColor = companyInfo?.color || '#A0A0A0';
@@ -85,7 +82,7 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
             )}
             {isGrouped && <p className="font-semibold text-primary capitalize">{brand}</p>}
           </div>
-          <Badge variant={currentStatus.variant} className="capitalize shrink-0">{currentStatus.label}</Badge>
+          <Badge className="capitalize shrink-0" style={{backgroundColor: statusColor}}>{status}</Badge>
         </div>
       </CardHeader>
 

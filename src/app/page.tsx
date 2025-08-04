@@ -122,7 +122,7 @@ export default function Home() {
               <SelectContent>
                 <SelectItem value="all">All Statuses</SelectItem>
                 {config.statuses.map(status => (
-                  <SelectItem key={status} value={status} className="capitalize">{status}</SelectItem>
+                  <SelectItem key={status.name} value={status.name} className="capitalize">{status.name}</SelectItem>
                 ))}
               </SelectContent>
             </Select>

@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import type { AppState, AppConfig, ACUnit, Company } from '@/types';
+import type { AppState, AppConfig, ACUnit, Company, Status } from '@/types';
 
 const initialConfig: AppConfig = {
   companies: [
@@ -11,7 +11,11 @@ const initialConfig: AppConfig = {
       { name: 'hnb', color: '#FF4500' },
       { name: 'customer', color: '#8A2BE2' }
   ],
-  statuses: ['active', 'breakdown', 'removed'],
+  statuses: [
+      { name: 'active', color: '#22C55E' },
+      { name: 'breakdown', color: '#EF4444' },
+      { name: 'removed', color: '#71717A' }
+  ],
   brands: ['panasonic', 'tcl', 'nikai', 'lg', 'mitsubishi', 'techo', 'nikura', 'toshiba', 'samsung', 'frostair', 'media'],
   btuCapacities: [9000, 10000, 12000, 13000, 18000, 24000],
   gasTypes: ['r22', 'r410a', 'r32'],
@@ -148,6 +152,13 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
                     return existing || { name, color: '#CCCCCC' };
                 });
                 mergedConfig.companies = newCompanies;
+             }
+              if (storedConfig.statuses && Array.isArray(storedConfig.statuses) && storedConfig.statuses.every((s: any) => typeof s === 'string')) {
+                const newStatuses = storedConfig.statuses.map((name: string) => {
+                    const existing = initialConfig.statuses.find(is => is.name === name);
+                    return existing || { name, color: '#CCCCCC' };
+                });
+                mergedConfig.statuses = newStatuses;
              }
              setConfig(mergedConfig);
         }

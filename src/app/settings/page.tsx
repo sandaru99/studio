@@ -8,10 +8,10 @@ import { Input } from '@/components/ui/input';
 import { useAppStore } from '@/hooks/use-app-store';
 import { useToast } from '@/hooks/use-toast';
 import { PageHeader } from '@/components/page-header';
-import { AppConfig, Company } from '@/types';
+import { AppConfig, Company, Status } from '@/types';
 import { Download, Upload, PlusCircle, X, Home } from 'lucide-react';
 
-type ConfigKey = keyof Omit<AppConfig, 'companies' | 'btuCapacities' | 'inverterOptions'>;
+type ConfigKey = keyof Omit<AppConfig, 'companies' | 'btuCapacities' | 'inverterOptions' | 'statuses'>;
 type ConfigNumberKey = keyof Pick<AppConfig, 'btuCapacities'>;
 
 export default function SettingsPage() {
@@ -20,7 +20,9 @@ export default function SettingsPage() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [newValues, setNewValues] = useState<Record<string, string>>({
         companyName: '',
-        companyColor: '#000000'
+        companyColor: '#000000',
+        statusName: '',
+        statusColor: '#000000',
     });
 
     const handleExport = () => {
@@ -80,6 +82,33 @@ export default function SettingsPage() {
         toast({ title: "👍 Company Removed", description: `"${companyToRemove.name}" has been removed.` });
     }
 
+    const handleAddNewStatus = () => {
+        const name = newValues.statusName.trim();
+        const color = newValues.statusColor;
+        if (!name) {
+            toast({ variant: "destructive", title: "Invalid Input", description: "Status name cannot be empty." });
+            return;
+        }
+
+        if (config.statuses.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+            toast({ variant: "destructive", title: "Duplicate Value", description: `Status "${name}" already exists.` });
+            return;
+        }
+
+        const newStatus: Status = { name, color };
+        const newList = [...config.statuses, newStatus].sort((a,b) => a.name.localeCompare(b.name));
+        updateConfig({ statuses: newList });
+        setNewValues(prev => ({ ...prev, statusName: '', statusColor: '#000000' }));
+        toast({ title: "👍 Status Added", description: `"${name}" has been added.` });
+    }
+
+    const handleRemoveStatus = (statusToRemove: Status) => {
+        const newList = config.statuses.filter(s => s.name !== statusToRemove.name);
+        updateConfig({ statuses: newList });
+        toast({ title: "👍 Status Removed", description: `"${statusToRemove.name}" has been removed.` });
+    }
+
+
     const handleAddNewValue = (key: ConfigKey | ConfigNumberKey) => {
         const isNumberKey = key === 'btuCapacities';
         const rawValue = newValues[key];
@@ -120,7 +149,6 @@ export default function SettingsPage() {
         { key: 'brands', label: 'AC Brands' },
         { key: 'gasTypes', label: 'Gas Types' },
         { key: 'acTypes', label: 'AC Types' },
-        { key: 'statuses', label: 'Statuses' },
     ];
     
     const numberConfigSections: { key: ConfigNumberKey, label: string }[] = [
@@ -189,6 +217,40 @@ export default function SettingsPage() {
                                             onClick={() => handleRemoveCompany(company)}
                                             className="bg-muted-foreground/20 hover:bg-destructive hover:text-destructive-foreground rounded-full p-0.5"
                                             aria-label={`Remove ${company.name}`}
+                                        >
+                                            <X className="h-3 w-3" />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 className="font-medium mb-2">Statuses</h3>
+                            <div className="flex gap-2">
+                                <Input
+                                    type="text"
+                                    placeholder="Add new status name"
+                                    value={newValues.statusName || ''}
+                                    onChange={(e) => setNewValues(prev => ({ ...prev, statusName: e.target.value }))}
+                                />
+                                <Input
+                                    type="color"
+                                    value={newValues.statusColor || '#000000'}
+                                    onChange={(e) => setNewValues(prev => ({ ...prev, statusColor: e.target.value }))}
+                                    className="w-24 p-1"
+                                />
+                                <Button onClick={handleAddNewStatus}><PlusCircle className="mr-2 h-4 w-4" />Add</Button>
+                            </div>
+                            <div className="flex flex-wrap gap-2 mt-3">
+                                {config.statuses.map(status => (
+                                    <div key={status.name} className="bg-muted text-muted-foreground pl-3 pr-2 py-1 rounded-full text-sm flex items-center gap-2">
+                                        <span className="w-4 h-4 rounded-full" style={{ backgroundColor: status.color }}></span>
+                                        <span className="capitalize">{status.name}</span>
+                                        <button 
+                                            onClick={() => handleRemoveStatus(status)}
+                                            className="bg-muted-foreground/20 hover:bg-destructive hover:text-destructive-foreground rounded-full p-0.5"
+                                            aria-label={`Remove ${status.name}`}
                                         >
                                             <X className="h-3 w-3" />
                                         </button>
