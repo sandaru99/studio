@@ -164,9 +164,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
                 });
                 mergedConfig.statuses = newStatuses;
              }
-             if (storedConfig.brands && Array.isArray(storedConfig.brands) && storedConfig.brands.every((b: any) => typeof b === 'string')) {
-                const newBrands = storedConfig.brands.map((name: string) => {
-                    return { name };
+             if (storedConfig.brands && Array.isArray(storedConfig.brands) && storedConfig.brands.every((b: any) => typeof b === 'string' || (typeof b === 'object' && b.name))) {
+                const newBrands = storedConfig.brands.map((brand: any) => {
+                    if(typeof brand === 'string') return { name: brand };
+                    return { name: brand.name }; // only keep name property
                 });
                 mergedConfig.brands = newBrands;
              }

@@ -10,7 +10,6 @@ export type Status = {
 
 export type Brand = {
   name: string;
-  logo?: string;
 }
 
 export type ACUnit = {

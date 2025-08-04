@@ -57,17 +57,6 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
   const CardComponent = isGrouped ? 'div' : Card;
 
   const BrandDisplay = () => {
-    if (brandInfo?.logo) {
-      return (
-        <Image 
-          src={brandInfo.logo} 
-          alt={`${brand} logo`}
-          width={isGrouped ? 60 : 80} 
-          height={isGrouped ? 20 : 28} 
-          className="object-contain"
-        />
-      );
-    }
     return <p className="font-semibold text-primary capitalize">{brand}</p>;
   };
 

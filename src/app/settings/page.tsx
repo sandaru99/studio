@@ -10,7 +10,7 @@ import { useAppStore } from '@/hooks/use-app-store';
 import { useToast } from '@/hooks/use-toast';
 import { PageHeader } from '@/components/page-header';
 import { AppConfig, Company, Status, Brand } from '@/types';
-import { Download, Upload, PlusCircle, X, Home, Image as ImageIcon } from 'lucide-react';
+import { Download, Upload, PlusCircle, X, Home, ImageIcon } from 'lucide-react';
 
 type ConfigKey = keyof Omit<AppConfig, 'companies' | 'btuCapacities' | 'inverterOptions' | 'statuses' | 'brands'>;
 type ConfigNumberKey = keyof Pick<AppConfig, 'btuCapacities'>;
@@ -25,7 +25,6 @@ export default function SettingsPage() {
         statusName: '',
         statusColor: '#000000',
         brandName: '',
-        brandLogo: '',
     });
 
     const handleExport = () => {
@@ -87,7 +86,6 @@ export default function SettingsPage() {
     
     const handleAddNewBrand = () => {
         const name = newValues.brandName.trim();
-        const logo = newValues.brandLogo.trim();
         if (!name) {
             toast({ variant: "destructive", title: "Invalid Input", description: "Brand name cannot be empty." });
             return;
@@ -98,10 +96,10 @@ export default function SettingsPage() {
             return;
         }
 
-        const newBrand: Brand = { name, logo: logo || undefined };
+        const newBrand: Brand = { name };
         const newList = [...config.brands, newBrand].sort((a,b) => a.name.localeCompare(b.name));
         updateConfig({ brands: newList });
-        setNewValues(prev => ({ ...prev, brandName: '', brandLogo: '' }));
+        setNewValues(prev => ({ ...prev, brandName: '' }));
         toast({ title: "👍 Brand Added", description: `"${name}" has been added.` });
     }
 
@@ -263,22 +261,12 @@ export default function SettingsPage() {
                                     value={newValues.brandName || ''}
                                     onChange={(e) => setNewValues(prev => ({ ...prev, brandName: e.target.value }))}
                                 />
-                                <Input
-                                    type="text"
-                                    placeholder="Add logo URL (optional)"
-                                    value={newValues.brandLogo || ''}
-                                    onChange={(e) => setNewValues(prev => ({ ...prev, brandLogo: e.target.value }))}
-                                />
                                 <Button onClick={handleAddNewBrand}><PlusCircle className="mr-2 h-4 w-4" />Add</Button>
                             </div>
                             <div className="flex flex-wrap gap-2 mt-3">
                                 {config.brands.map(brand => (
                                     <div key={brand.name} className="bg-muted text-muted-foreground pl-3 pr-2 py-1 rounded-full text-sm flex items-center gap-2">
-                                        {brand.logo ? (
-                                            <Image src={brand.logo} alt={brand.name} width={16} height={16} className="object-contain rounded-full bg-white" />
-                                        ) : (
-                                            <ImageIcon className="w-4 h-4" />
-                                        )}
+                                        <ImageIcon className="w-4 h-4" />
                                         <span className="capitalize">{brand.name}</span>
                                         <button 
                                             onClick={() => handleRemoveBrand(brand)}
