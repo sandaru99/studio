@@ -1,11 +1,11 @@
-
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { ACUnit } from '@/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from './ui/card';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { 
-    Building, MapPin, Tag, Wrench, Thermometer, Power, Database, Hash, User, Home, Phone
+    Building, MapPin, Tag, Wrench, Thermometer, Power, Database, Hash, User, Home, Phone, ImageIcon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/hooks/use-app-store';
@@ -35,6 +35,8 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
   const statusInfo = config.statuses.find(s => s.name === status);
   const statusColor = statusInfo?.color || '#A0A0A0';
 
+  const brandInfo = config.brands.find(b => b.name === brand);
+
   const gasColorClass = gasTypeColorMap[gasType.toLowerCase()] || '';
   const companyInfo = config.companies.find(c => c.name === company);
   const companyColor = companyInfo?.color || '#A0A0A0';
@@ -53,6 +55,21 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
   }, [mapLocation]);
 
   const CardComponent = isGrouped ? 'div' : Card;
+
+  const BrandDisplay = () => {
+    if (brandInfo?.logo) {
+      return (
+        <Image 
+          src={brandInfo.logo} 
+          alt={`${brand} logo`}
+          width={isGrouped ? 60 : 80} 
+          height={isGrouped ? 20 : 28} 
+          className="object-contain"
+        />
+      );
+    }
+    return <p className="font-semibold text-primary capitalize">{brand}</p>;
+  };
 
   return (
     <CardComponent 
@@ -80,7 +97,7 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
                 </CardDescription>
                 </>
             )}
-            {isGrouped && <p className="font-semibold text-primary capitalize">{brand}</p>}
+            {isGrouped && <BrandDisplay />}
           </div>
           <Badge className="capitalize shrink-0" style={{backgroundColor: statusColor}}>{status}</Badge>
         </div>
@@ -94,7 +111,7 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
                 </div>
             )}
             <div>
-                { !isGrouped && <p className="font-semibold text-primary capitalize">{brand}</p>}
+                { !isGrouped && <BrandDisplay />}
                 <p className="font-bold">{modelNumber}</p>
                 <p className="font-bold flex items-center gap-2 pt-1"><Hash className="w-3 h-3"/> {serialNumber}</p>
             </div>

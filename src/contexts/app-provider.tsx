@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import type { AppState, AppConfig, ACUnit, Company, Status } from '@/types';
+import type { AppState, AppConfig, ACUnit, Company, Status, Brand } from '@/types';
 
 const initialConfig: AppConfig = {
   companies: [
@@ -16,7 +16,11 @@ const initialConfig: AppConfig = {
       { name: 'breakdown', color: '#EF4444' },
       { name: 'removed', color: '#71717A' }
   ],
-  brands: ['panasonic', 'tcl', 'nikai', 'lg', 'mitsubishi', 'techo', 'nikura', 'toshiba', 'samsung', 'frostair', 'media'],
+  brands: [
+    { name: 'panasonic' }, { name: 'tcl' }, { name: 'nikai' }, { name: 'lg' }, 
+    { name: 'mitsubishi' }, { name: 'techo' }, { name: 'nikura' }, { name: 'toshiba' },
+    { name: 'samsung' }, { name: 'frostair' }, { name: 'media' }
+  ],
   btuCapacities: [9000, 10000, 12000, 13000, 18000, 24000],
   gasTypes: ['r22', 'r410a', 'r32'],
   acTypes: ['split', 'cassete', 'ceiling suspend', 'chiller cassete'],
@@ -160,15 +164,23 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
                 });
                 mergedConfig.statuses = newStatuses;
              }
+             if (storedConfig.brands && Array.isArray(storedConfig.brands) && storedConfig.brands.every((b: any) => typeof b === 'string')) {
+                const newBrands = storedConfig.brands.map((name: string) => {
+                    return { name };
+                });
+                mergedConfig.brands = newBrands;
+             }
              setConfig(mergedConfig);
         }
       } else {
          setAcUnits(sampleAcUnits.map(unit => ({ ...unit, id: new Date().toISOString() + Math.random() })));
+         setConfig(initialConfig);
       }
     } catch (error) {
       console.error("Failed to load state from localStorage", error);
       // Fallback to sample data if localStorage is corrupt
       setAcUnits(sampleAcUnits.map(unit => ({ ...unit, id: new Date().toISOString() + Math.random() })));
+      setConfig(initialConfig);
     }
     setIsInitialized(true);
   }, []);

@@ -2,16 +2,17 @@
 
 import React, { useRef, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useAppStore } from '@/hooks/use-app-store';
 import { useToast } from '@/hooks/use-toast';
 import { PageHeader } from '@/components/page-header';
-import { AppConfig, Company, Status } from '@/types';
-import { Download, Upload, PlusCircle, X, Home } from 'lucide-react';
+import { AppConfig, Company, Status, Brand } from '@/types';
+import { Download, Upload, PlusCircle, X, Home, Image as ImageIcon } from 'lucide-react';
 
-type ConfigKey = keyof Omit<AppConfig, 'companies' | 'btuCapacities' | 'inverterOptions' | 'statuses'>;
+type ConfigKey = keyof Omit<AppConfig, 'companies' | 'btuCapacities' | 'inverterOptions' | 'statuses' | 'brands'>;
 type ConfigNumberKey = keyof Pick<AppConfig, 'btuCapacities'>;
 
 export default function SettingsPage() {
@@ -23,6 +24,8 @@ export default function SettingsPage() {
         companyColor: '#000000',
         statusName: '',
         statusColor: '#000000',
+        brandName: '',
+        brandLogo: '',
     });
 
     const handleExport = () => {
@@ -81,6 +84,32 @@ export default function SettingsPage() {
         updateConfig({ companies: newList });
         toast({ title: "👍 Company Removed", description: `"${companyToRemove.name}" has been removed.` });
     }
+    
+    const handleAddNewBrand = () => {
+        const name = newValues.brandName.trim();
+        const logo = newValues.brandLogo.trim();
+        if (!name) {
+            toast({ variant: "destructive", title: "Invalid Input", description: "Brand name cannot be empty." });
+            return;
+        }
+
+        if (config.brands.some(b => b.name.toLowerCase() === name.toLowerCase())) {
+            toast({ variant: "destructive", title: "Duplicate Value", description: `Brand "${name}" already exists.` });
+            return;
+        }
+
+        const newBrand: Brand = { name, logo: logo || undefined };
+        const newList = [...config.brands, newBrand].sort((a,b) => a.name.localeCompare(b.name));
+        updateConfig({ brands: newList });
+        setNewValues(prev => ({ ...prev, brandName: '', brandLogo: '' }));
+        toast({ title: "👍 Brand Added", description: `"${name}" has been added.` });
+    }
+
+    const handleRemoveBrand = (brandToRemove: Brand) => {
+        const newList = config.brands.filter(b => b.name !== brandToRemove.name);
+        updateConfig({ brands: newList });
+        toast({ title: "👍 Brand Removed", description: `"${brandToRemove.name}" has been removed.` });
+    }
 
     const handleAddNewStatus = () => {
         const name = newValues.statusName.trim();
@@ -120,8 +149,9 @@ export default function SettingsPage() {
             toast({ variant: "destructive", title: "Invalid Input", description: "Please enter a valid number for BTU capacity." });
             return;
         }
+        
+        const currentList = Array.isArray(config[key as keyof AppConfig]) ? config[key as keyof AppConfig] as (string | number)[] : [];
 
-        const currentList = config[key as keyof AppConfig] as (string | number)[];
         if (currentList.map(String).includes(String(value))) {
             toast({ variant: "destructive", title: "Duplicate Value", description: `"${value}" already exists.` });
             return;
@@ -146,7 +176,6 @@ export default function SettingsPage() {
     };
 
     const configSections: { key: ConfigKey, label: string }[] = [
-        { key: 'brands', label: 'AC Brands' },
         { key: 'gasTypes', label: 'Gas Types' },
         { key: 'acTypes', label: 'AC Types' },
     ];
@@ -224,6 +253,44 @@ export default function SettingsPage() {
                                 ))}
                             </div>
                         </div>
+                        
+                        <div>
+                            <h3 className="font-medium mb-2">AC Brands</h3>
+                            <div className="flex gap-2">
+                                <Input
+                                    type="text"
+                                    placeholder="Add new brand name"
+                                    value={newValues.brandName || ''}
+                                    onChange={(e) => setNewValues(prev => ({ ...prev, brandName: e.target.value }))}
+                                />
+                                <Input
+                                    type="text"
+                                    placeholder="Add logo URL (optional)"
+                                    value={newValues.brandLogo || ''}
+                                    onChange={(e) => setNewValues(prev => ({ ...prev, brandLogo: e.target.value }))}
+                                />
+                                <Button onClick={handleAddNewBrand}><PlusCircle className="mr-2 h-4 w-4" />Add</Button>
+                            </div>
+                            <div className="flex flex-wrap gap-2 mt-3">
+                                {config.brands.map(brand => (
+                                    <div key={brand.name} className="bg-muted text-muted-foreground pl-3 pr-2 py-1 rounded-full text-sm flex items-center gap-2">
+                                        {brand.logo ? (
+                                            <Image src={brand.logo} alt={brand.name} width={16} height={16} className="object-contain rounded-full bg-white" />
+                                        ) : (
+                                            <ImageIcon className="w-4 h-4" />
+                                        )}
+                                        <span className="capitalize">{brand.name}</span>
+                                        <button 
+                                            onClick={() => handleRemoveBrand(brand)}
+                                            className="bg-muted-foreground/20 hover:bg-destructive hover:text-destructive-foreground rounded-full p-0.5"
+                                            aria-label={`Remove ${brand.name}`}
+                                        >
+                                            <X className="h-3 w-3" />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
 
                         <div>
                             <h3 className="font-medium mb-2">Statuses</h3>
@@ -273,7 +340,7 @@ export default function SettingsPage() {
                                     <Button onClick={() => handleAddNewValue(key as any)}><PlusCircle className="mr-2 h-4 w-4" />Add</Button>
                                 </div>
                                 <div className="flex flex-wrap gap-2 mt-3">
-                                    {config[key as keyof AppConfig].map(item => (
+                                    {(config[key as keyof AppConfig] as (string|number)[]).map(item => (
                                         <div key={String(item)} className="bg-muted text-muted-foreground pl-3 pr-2 py-1 rounded-full text-sm flex items-center gap-1.5">
                                             <span>{item}</span>
                                             <button 

@@ -8,6 +8,11 @@ export type Status = {
   color: string;
 };
 
+export type Brand = {
+  name: string;
+  logo?: string;
+}
+
 export type ACUnit = {
   id: string;
   modelNumber: string;
@@ -42,7 +47,7 @@ export interface AppState {
 export interface AppConfig {
   companies: Company[];
   statuses: Status[];
-  brands: string[];
+  brands: Brand[];
   btuCapacities: number[];
   gasTypes: string[];
   acTypes: string[];
