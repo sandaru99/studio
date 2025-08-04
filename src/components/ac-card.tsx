@@ -63,7 +63,7 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
                 <CardTitle className="text-lg font-bold capitalize" style={{ color: companyColor }}>{company}</CardTitle>
                 <CardDescription className="flex items-center gap-2 text-sm text-muted-foreground">
                   <MapPin className="w-4 h-4" />
-                  <span>{companyCity}</span>
+                  <span className="font-bold">{companyCity}</span>
                 </CardDescription>
                 </>
             )}
