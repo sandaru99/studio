@@ -62,11 +62,13 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
                     <AcCard unit={unit} />
                 </div>
                 
-                <DialogFooter>
-                    <Button variant="outline" onClick={handleEdit}>
-                        <Pencil className="w-4 h-4 mr-2" />
-                        Edit
-                    </Button>
+                <DialogFooter className="sm:justify-between">
+                    <div>
+                        <Button variant="outline" onClick={handleEdit}>
+                            <Pencil className="w-4 h-4 mr-2" />
+                            Edit
+                        </Button>
+                    </div>
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant="destructive">
