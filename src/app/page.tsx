@@ -62,7 +62,7 @@ export default function Home() {
     <>
     <div className="flex flex-1 flex-col p-4 md:p-6 lg:p-8 gap-6">
       <PageHeader
-        title="AC Unit Dashboard"
+        title="Ac Info"
         description="View, filter, and manage all your AC units in one place."
       >
         <div className="flex items-center gap-2">
