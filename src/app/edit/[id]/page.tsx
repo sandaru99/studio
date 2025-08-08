@@ -19,6 +19,7 @@ import { useToast } from '@/hooks/use-toast';
 import { PageHeader } from '@/components/page-header';
 import { MapPin, Home } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ACUnit } from '@/types';
 
 const formSchema = z.object({
   id: z.string(),
@@ -57,6 +58,7 @@ export default function EditAcPage() {
     const { acUnits, updateAcUnit, config, isInitialized } = useAppStore();
     const [mapPreviewUrl, setMapPreviewUrl] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [unit, setUnit] = useState<ACUnit | null>(null);
 
     const form = useForm<FormData>({
         resolver: zodResolver(formSchema),
@@ -80,9 +82,10 @@ export default function EditAcPage() {
     });
 
     useEffect(() => {
-        if (isInitialized) {
-            const unitToEdit = acUnits.find(unit => unit.id === id);
+        if (isInitialized && id) {
+            const unitToEdit = acUnits.find(u => u.id === id);
             if (unitToEdit) {
+                setUnit(unitToEdit);
                 form.reset(unitToEdit);
                 setIsLoading(false);
             } else {
