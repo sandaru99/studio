@@ -57,7 +57,6 @@ export default function EditAcPage() {
     const { toast } = useToast();
     const { acUnits, updateAcUnit, config, isInitialized } = useAppStore();
     const [mapPreviewUrl, setMapPreviewUrl] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
     const [unit, setUnit] = useState<ACUnit | null>(null);
 
     const form = useForm<FormData>({
@@ -82,12 +81,12 @@ export default function EditAcPage() {
     });
 
     useEffect(() => {
-        if (isInitialized && id) {
-            const unitToEdit = acUnits.find(u => u.id === id);
+        if (isInitialized && id && acUnits.length > 0) {
+            const unitId = Array.isArray(id) ? id[0] : id;
+            const unitToEdit = acUnits.find(u => u.id === unitId);
             if (unitToEdit) {
                 setUnit(unitToEdit);
                 form.reset(unitToEdit);
-                setIsLoading(false);
             } else {
                 toast({ variant: 'destructive', title: "Error", description: "AC Unit not found." });
                 router.push('/');
@@ -99,8 +98,9 @@ export default function EditAcPage() {
     const mapLocationWatcher = form.watch('mapLocation');
 
     useEffect(() => {
-        if (mapLocationWatcher && mapLocationWatcher.includes('@')) {
-            const parts = mapLocationWatcher.split('@')[1]?.split(',');
+        const currentMapLocation = form.getValues('mapLocation');
+        if (currentMapLocation && currentMapLocation.includes('@')) {
+            const parts = currentMapLocation.split('@')[1]?.split(',');
             if (parts?.length >= 2) {
                 const lat = parts[0];
                 const lng = parts[1];
@@ -109,10 +109,11 @@ export default function EditAcPage() {
         } else {
             setMapPreviewUrl('');
         }
-    }, [mapLocationWatcher]);
+    }, [mapLocationWatcher, form]);
 
     const onSubmit = (data: FormData) => {
-        updateAcUnit(String(id), data);
+        const unitId = Array.isArray(id) ? id[0] : id;
+        updateAcUnit(unitId, data);
         toast({
             title: "Success! 🎉",
             description: `AC unit ${data.serialNumber} has been updated.`,
@@ -120,7 +121,7 @@ export default function EditAcPage() {
         router.push('/');
     };
     
-    if (isLoading) {
+    if (!isInitialized || !unit) {
         return (
             <div className="flex-1 flex flex-col p-4 md:p-6 lg:p-8 gap-6 space-y-8">
                 <PageHeader title="Edit AC Unit" description="Loading unit details...">
@@ -274,3 +275,5 @@ export default function EditAcPage() {
         </div>
     );
 }
+
+    
