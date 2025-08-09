@@ -3,6 +3,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/hooks/use-app-store';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,7 @@ type SortKey = keyof ACUnit | '';
 export default function ReportPage() {
     const { acUnits, isInitialized } = useAppStore();
     const { toast } = useToast();
+    const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
     const [sortKey, setSortKey] = useState<SortKey>('company');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -28,6 +30,10 @@ export default function ReportPage() {
             setSortKey(key);
             setSortDirection('asc');
         }
+    };
+
+    const handleRowClick = (unitId: string) => {
+        router.push(`/edit/${unitId}`);
     };
 
     const sortedAndFilteredUnits = useMemo(() => {
@@ -166,7 +172,12 @@ export default function ReportPage() {
                         <TableBody>
                             {sortedAndFilteredUnits.length > 0 ? (
                                 sortedAndFilteredUnits.map(unit => (
-                                    <TableRow key={unit.id} className="animate-fade-in" style={{ animationDelay: '150ms' }}>
+                                    <TableRow 
+                                        key={unit.id} 
+                                        className="animate-fade-in cursor-pointer" 
+                                        style={{ animationDelay: '150ms' }}
+                                        onClick={() => handleRowClick(unit.id)}
+                                    >
                                         <TableCell className="font-medium capitalize">{unit.company}</TableCell>
                                         <TableCell>{unit.companyCity}</TableCell>
                                         <TableCell>{unit.serialNumber}</TableCell>
