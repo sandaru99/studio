@@ -56,7 +56,6 @@ export default function AddAcPage() {
     const router = useRouter();
     const { toast } = useToast();
     const { addAcUnits, config } = useAppStore();
-    const [mapPreviewUrl, setMapPreviewUrl] = useState('');
     
     const form = useForm<FormData>({
         resolver: zodResolver(formSchema),
@@ -74,20 +73,6 @@ export default function AddAcPage() {
     });
 
     const companyWatcher = form.watch('company');
-    const mapLocationWatcher = form.watch('mapLocation');
-
-    useEffect(() => {
-        if(mapLocationWatcher && mapLocationWatcher.includes('@')) {
-            const parts = mapLocationWatcher.split('@')[1].split(',');
-            if (parts.length >= 2) {
-                const lat = parts[0];
-                const lng = parts[1];
-                setMapPreviewUrl(`https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&output=embed`);
-            }
-        } else {
-            setMapPreviewUrl('');
-        }
-    }, [mapLocationWatcher]);
 
     const onSubmit = (data: FormData) => {
         const unitsToAdd = data.acUnits.map(unit => ({
@@ -151,7 +136,7 @@ export default function AddAcPage() {
                                     </FormItem>
                                 )} />
                             </div>
-                            <div className="grid md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 gap-6">
                                 <FormField name="mapLocation" control={form.control} render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Google Map Location</FormLabel>
@@ -159,18 +144,6 @@ export default function AddAcPage() {
                                         <FormMessage />
                                     </FormItem>
                                 )} />
-                                {mapPreviewUrl ? (
-                                    <div className="rounded-lg overflow-hidden border">
-                                        <iframe width="100%" height="250" style={{ border: 0 }} loading="lazy" allowFullScreen src={mapPreviewUrl}></iframe>
-                                    </div>
-                                ) : (
-                                    <div className="rounded-lg border border-dashed flex items-center justify-center h-[250px]">
-                                        <div className="text-center text-muted-foreground">
-                                            <MapPin className="mx-auto h-8 w-8 mb-2"/>
-                                            <p>Map preview will appear here</p>
-                                        </div>
-                                    </div>
-                                ) }
                             </div>
                              {companyWatcher === 'customer' && (
                                 <>
