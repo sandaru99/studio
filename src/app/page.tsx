@@ -81,7 +81,7 @@ export default function Home() {
         </div>
       </PageHeader>
 
-      <Card>
+      <Card className="animate-fade-in-up" style={{ animationDelay: '150ms' }}>
         <CardHeader>
           <CardTitle className="text-xl">Search AC Units</CardTitle>
         </CardHeader>
@@ -132,11 +132,11 @@ export default function Home() {
       {groupedUnits.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {groupedUnits.map((group, index) => (
-             <GroupedAcCard key={`${group[0].company}-${group[0].companyCity}-${index}`} units={group} onCardClick={handleCardClick} />
+             <GroupedAcCard key={`${group[0].company}-${group[0].companyCity}-${index}`} units={group} onCardClick={handleCardClick} index={index} />
           ))}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center text-center py-20 rounded-lg border border-dashed">
+        <div className="flex flex-col items-center justify-center text-center py-20 rounded-lg border border-dashed animate-fade-in-up" style={{ animationDelay: '300ms' }}>
             <h2 className="text-2xl font-semibold mb-2">No AC Units Found</h2>
             <p className="text-muted-foreground mb-4">
               {acUnits.length > 0 ? "No units match your current filters." : "Get started by adding a new AC unit."}

@@ -10,9 +10,10 @@ import { useAppStore } from '@/hooks/use-app-store';
 interface GroupedAcCardProps {
   units: ACUnit[];
   onCardClick: (unit: ACUnit) => void;
+  index: number;
 }
 
-export function GroupedAcCard({ units, onCardClick }: GroupedAcCardProps) {
+export function GroupedAcCard({ units, onCardClick, index }: GroupedAcCardProps) {
   const { config } = useAppStore();
   const firstUnit = units[0];
   const { company, companyCity } = firstUnit;
@@ -36,11 +37,12 @@ export function GroupedAcCard({ units, onCardClick }: GroupedAcCardProps) {
 
   return (
     <Card 
-        className="flex flex-col h-full hover:shadow-xl transition-shadow duration-300 bg-card"
+        className="flex flex-col h-full bg-card transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.02] animate-fade-in-up"
         style={{
             borderWidth: '1px',
             borderColor: companyColor,
             borderTopWidth: '4px',
+            animationDelay: `${150 + index * 50}ms`
         }}
     >
       <CardHeader>
