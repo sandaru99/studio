@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -113,7 +114,7 @@ export default function AddAcPage() {
                             <CardDescription>This information will apply to all AC units added in this form.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                            <div className="grid md:grid-cols-2 gap-6">
+                            <div className="grid sm:grid-cols-2 gap-6">
                                 <FormField name="company" control={form.control} render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Company / Owner</FormLabel>
@@ -149,7 +150,7 @@ export default function AddAcPage() {
                                 <>
                                 <Separator />
                                 <CardDescription>Please provide the customer's contact information.</CardDescription>
-                                <div className="grid md:grid-cols-3 gap-6">
+                                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
                                     <FormField name="customerName" control={form.control} render={({ field }) => (<FormItem><FormLabel>Customer Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                     <FormField name="customerAddress" control={form.control} render={({ field }) => (<FormItem><FormLabel>Customer Address</FormLabel><FormControl><Input placeholder="123 Main St, Colombo" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                     <FormField name="customerContact" control={form.control} render={({ field }) => (<FormItem><FormLabel>Customer Contact</FormLabel><FormControl><Input placeholder="0771234567" {...field} /></FormControl><FormMessage /></FormItem>)} />
@@ -173,7 +174,7 @@ export default function AddAcPage() {
                                 </div>
                             </CardHeader>
                             <CardContent className="space-y-6">
-                                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                     <FormField name={`acUnits.${index}.modelNumber`} control={form.control} render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Model Number</FormLabel>
@@ -207,7 +208,7 @@ export default function AddAcPage() {
                                         <FormItem><FormLabel>Status</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl><SelectContent>{config.statuses.map(s => <SelectItem key={s.name} value={s.name} className="capitalize">{s.name}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                                     )} />
                                     <FormField name={`acUnits.${index}.installLocation`} control={form.control} render={({ field }) => (
-                                        <FormItem className="lg:col-span-3">
+                                        <FormItem className="sm:col-span-2 lg:col-span-3">
                                             <FormLabel>Install Location</FormLabel>
                                             <FormControl><Textarea placeholder="e.g., 2nd Floor, Manager's Office" {...field} /></FormControl>
                                             <FormMessage />

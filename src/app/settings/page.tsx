@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useRef, useState } from 'react';
@@ -199,7 +200,7 @@ export default function SettingsPage() {
                     </Link>
                 </Button>
             </PageHeader>
-            <div className="grid gap-8">
+            <div className="grid md:grid-cols-2 gap-8">
                 <Card>
                     <CardHeader>
                         <CardTitle>Data Management</CardTitle>
@@ -212,129 +213,39 @@ export default function SettingsPage() {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="md:col-span-2">
                     <CardHeader>
                         <CardTitle>Manage Configurations</CardTitle>
                         <CardDescription>Add or remove options for the dropdown menus throughout the app.</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-6">
-                        <div>
-                            <h3 className="font-medium mb-2">Company</h3>
-                            <div className="flex gap-2">
-                                <Input
-                                    type="text"
-                                    placeholder="Add new company name"
-                                    value={newValues.companyName || ''}
-                                    onChange={(e) => setNewValues(prev => ({ ...prev, companyName: e.target.value }))}
-                                />
-                                <Input
-                                    type="color"
-                                    value={newValues.companyColor || '#000000'}
-                                    onChange={(e) => setNewValues(prev => ({ ...prev, companyColor: e.target.value }))}
-                                    className="w-24 p-1"
-                                />
-                                <Button onClick={handleAddNewCompany}><PlusCircle className="mr-2 h-4 w-4" />Add</Button>
-                            </div>
-                            <div className="flex flex-wrap gap-2 mt-3">
-                                {config.companies.map(company => (
-                                    <div key={company.name} className="bg-muted text-muted-foreground pl-3 pr-2 py-1 rounded-full text-sm flex items-center gap-2">
-                                        <span className="w-4 h-4 rounded-full" style={{ backgroundColor: company.color }}></span>
-                                        <span className="capitalize">{company.name}</span>
-                                        <button 
-                                            onClick={() => handleRemoveCompany(company)}
-                                            className="bg-muted-foreground/20 hover:bg-destructive hover:text-destructive-foreground rounded-full p-0.5"
-                                            aria-label={`Remove ${company.name}`}
-                                        >
-                                            <X className="h-3 w-3" />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <h3 className="font-medium mb-2">AC Brands</h3>
-                            <div className="flex gap-2">
-                                <Input
-                                    type="text"
-                                    placeholder="Add new brand name"
-                                    value={newValues.brandName || ''}
-                                    onChange={(e) => setNewValues(prev => ({ ...prev, brandName: e.target.value }))}
-                                />
-                                <Button onClick={handleAddNewBrand}><PlusCircle className="mr-2 h-4 w-4" />Add</Button>
-                            </div>
-                            <div className="flex flex-wrap gap-2 mt-3">
-                                {config.brands.map(brand => (
-                                    <div key={brand.name} className="bg-muted text-muted-foreground pl-3 pr-2 py-1 rounded-full text-sm flex items-center gap-2">
-                                        <ImageIcon className="w-4 h-4" />
-                                        <span className="capitalize">{brand.name}</span>
-                                        <button 
-                                            onClick={() => handleRemoveBrand(brand)}
-                                            className="bg-muted-foreground/20 hover:bg-destructive hover:text-destructive-foreground rounded-full p-0.5"
-                                            aria-label={`Remove ${brand.name}`}
-                                        >
-                                            <X className="h-3 w-3" />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 className="font-medium mb-2">Statuses</h3>
-                            <div className="flex gap-2">
-                                <Input
-                                    type="text"
-                                    placeholder="Add new status name"
-                                    value={newValues.statusName || ''}
-                                    onChange={(e) => setNewValues(prev => ({ ...prev, statusName: e.target.value }))}
-                                />
-                                <Input
-                                    type="color"
-                                    value={newValues.statusColor || '#000000'}
-                                    onChange={(e) => setNewValues(prev => ({ ...prev, statusColor: e.target.value }))}
-                                    className="w-24 p-1"
-                                />
-                                <Button onClick={handleAddNewStatus}><PlusCircle className="mr-2 h-4 w-4" />Add</Button>
-                            </div>
-                            <div className="flex flex-wrap gap-2 mt-3">
-                                {config.statuses.map(status => (
-                                    <div key={status.name} className="bg-muted text-muted-foreground pl-3 pr-2 py-1 rounded-full text-sm flex items-center gap-2">
-                                        <span className="w-4 h-4 rounded-full" style={{ backgroundColor: status.color }}></span>
-                                        <span className="capitalize">{status.name}</span>
-                                        <button 
-                                            onClick={() => handleRemoveStatus(status)}
-                                            className="bg-muted-foreground/20 hover:bg-destructive hover:text-destructive-foreground rounded-full p-0.5"
-                                            aria-label={`Remove ${status.name}`}
-                                        >
-                                            <X className="h-3 w-3" />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {configSections.concat(numberConfigSections as any).map(({ key, label }) => (
-                            <div key={key}>
-                                <h3 className="font-medium mb-2">{label}</h3>
+                    <CardContent className="space-y-8">
+                        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <div>
+                                <h3 className="font-medium mb-2">Company</h3>
                                 <div className="flex gap-2">
                                     <Input
-                                        type={key === 'btuCapacities' ? 'number' : 'text'}
-                                        placeholder={`Add new ${label.endsWith('s') ? label.slice(0, -1).toLowerCase() : label.toLowerCase()}`}
-                                        value={newValues[key] || ''}
-                                        onChange={(e) => setNewValues(prev => ({ ...prev, [key]: e.target.value }))}
-                                        onKeyDown={(e) => e.key === 'Enter' && handleAddNewValue(key as any)}
+                                        type="text"
+                                        placeholder="Add new company name"
+                                        value={newValues.companyName || ''}
+                                        onChange={(e) => setNewValues(prev => ({ ...prev, companyName: e.target.value }))}
                                     />
-                                    <Button onClick={() => handleAddNewValue(key as any)}><PlusCircle className="mr-2 h-4 w-4" />Add</Button>
+                                    <Input
+                                        type="color"
+                                        value={newValues.companyColor || '#000000'}
+                                        onChange={(e) => setNewValues(prev => ({ ...prev, companyColor: e.target.value }))}
+                                        className="w-24 p-1"
+                                    />
+                                    <Button onClick={handleAddNewCompany} size="sm">Add</Button>
                                 </div>
                                 <div className="flex flex-wrap gap-2 mt-3">
-                                    {(config[key as keyof AppConfig] as (string|number)[]).map(item => (
-                                        <div key={String(item)} className="bg-muted text-muted-foreground pl-3 pr-2 py-1 rounded-full text-sm flex items-center gap-1.5">
-                                            <span>{item}</span>
+                                    {config.companies.map(company => (
+                                        <div key={company.name} className="bg-muted text-muted-foreground pl-3 pr-2 py-1 rounded-full text-sm flex items-center gap-2">
+                                            <span className="w-4 h-4 rounded-full" style={{ backgroundColor: company.color }}></span>
+                                            <span className="capitalize">{company.name}</span>
                                             <button 
-                                                onClick={() => handleRemoveValue(key as any, item)}
+                                                onClick={() => handleRemoveCompany(company)}
                                                 className="bg-muted-foreground/20 hover:bg-destructive hover:text-destructive-foreground rounded-full p-0.5"
-                                                aria-label={`Remove ${item}`}
+                                                aria-label={`Remove ${company.name}`}
                                             >
                                                 <X className="h-3 w-3" />
                                             </button>
@@ -342,7 +253,100 @@ export default function SettingsPage() {
                                     ))}
                                 </div>
                             </div>
-                        ))}
+                            
+                            <div>
+                                <h3 className="font-medium mb-2">AC Brands</h3>
+                                <div className="flex gap-2">
+                                    <Input
+                                        type="text"
+                                        placeholder="Add new brand name"
+                                        value={newValues.brandName || ''}
+                                        onChange={(e) => setNewValues(prev => ({ ...prev, brandName: e.target.value }))}
+                                    />
+                                    <Button onClick={handleAddNewBrand} size="sm">Add</Button>
+                                </div>
+                                <div className="flex flex-wrap gap-2 mt-3">
+                                    {config.brands.map(brand => (
+                                        <div key={brand.name} className="bg-muted text-muted-foreground pl-3 pr-2 py-1 rounded-full text-sm flex items-center gap-2">
+                                            <ImageIcon className="w-4 h-4" />
+                                            <span className="capitalize">{brand.name}</span>
+                                            <button 
+                                                onClick={() => handleRemoveBrand(brand)}
+                                                className="bg-muted-foreground/20 hover:bg-destructive hover:text-destructive-foreground rounded-full p-0.5"
+                                                aria-label={`Remove ${brand.name}`}
+                                            >
+                                                <X className="h-3 w-3" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="font-medium mb-2">Statuses</h3>
+                                <div className="flex gap-2">
+                                    <Input
+                                        type="text"
+                                        placeholder="Add new status name"
+                                        value={newValues.statusName || ''}
+                                        onChange={(e) => setNewValues(prev => ({ ...prev, statusName: e.target.value }))}
+                                    />
+                                    <Input
+                                        type="color"
+                                        value={newValues.statusColor || '#000000'}
+                                        onChange={(e) => setNewValues(prev => ({ ...prev, statusColor: e.target.value }))}
+                                        className="w-24 p-1"
+                                    />
+                                    <Button onClick={handleAddNewStatus} size="sm">Add</Button>
+                                </div>
+                                <div className="flex flex-wrap gap-2 mt-3">
+                                    {config.statuses.map(status => (
+                                        <div key={status.name} className="bg-muted text-muted-foreground pl-3 pr-2 py-1 rounded-full text-sm flex items-center gap-2">
+                                            <span className="w-4 h-4 rounded-full" style={{ backgroundColor: status.color }}></span>
+                                            <span className="capitalize">{status.name}</span>
+                                            <button 
+                                                onClick={() => handleRemoveStatus(status)}
+                                                className="bg-muted-foreground/20 hover:bg-destructive hover:text-destructive-foreground rounded-full p-0.5"
+                                                aria-label={`Remove ${status.name}`}
+                                            >
+                                                <X className="h-3 w-3" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {configSections.concat(numberConfigSections as any).map(({ key, label }) => (
+                                <div key={key}>
+                                    <h3 className="font-medium mb-2">{label}</h3>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            type={key === 'btuCapacities' ? 'number' : 'text'}
+                                            placeholder={`Add new ${label.endsWith('s') ? label.slice(0, -1).toLowerCase() : label.toLowerCase()}`}
+                                            value={newValues[key] || ''}
+                                            onChange={(e) => setNewValues(prev => ({ ...prev, [key]: e.target.value }))}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleAddNewValue(key as any)}
+                                        />
+                                        <Button onClick={() => handleAddNewValue(key as any)} size="sm">Add</Button>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2 mt-3">
+                                        {(config[key as keyof AppConfig] as (string|number)[]).map(item => (
+                                            <div key={String(item)} className="bg-muted text-muted-foreground pl-3 pr-2 py-1 rounded-full text-sm flex items-center gap-1.5">
+                                                <span>{item}</span>
+                                                <button 
+                                                    onClick={() => handleRemoveValue(key as any, item)}
+                                                    className="bg-muted-foreground/20 hover:bg-destructive hover:text-destructive-foreground rounded-full p-0.5"
+                                                    aria-label={`Remove ${item}`}
+                                                >
+                                                    <X className="h-3 w-3" />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </CardContent>
                 </Card>
             </div>

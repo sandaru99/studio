@@ -66,7 +66,7 @@ export default function Home() {
         title="Ac Info"
         description="View, filter, and manage all your AC units in one place."
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Button asChild>
             <Link href="/add">
               <PlusCircle className="mr-2 h-4 w-4" />
@@ -93,7 +93,7 @@ export default function Home() {
           <CardTitle className="text-xl">Search AC Units</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {/* Filter by Company */}
             <Select onValueChange={handleFilterChange('company')} value={filters.company}>
               <SelectTrigger>
@@ -137,7 +137,7 @@ export default function Home() {
       </Card>
       
       {groupedUnits.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {groupedUnits.map((group, index) => (
              <GroupedAcCard key={`${group[0].company}-${group[0].companyCity}-${index}`} units={group} onCardClick={handleCardClick} index={index} />
           ))}
