@@ -59,25 +59,24 @@ export default function EditAcPage() {
 
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
 
-    useEffect(() => {
-      if (isInitialized && id) {
-        const foundUnit = getAcUnitById(id);
-        setUnit(foundUnit);
-      }
-    }, [isInitialized, id, getAcUnitById]);
-
     const form = useForm<FormData>({
         resolver: zodResolver(formSchema),
     });
-
+    
+    // Effect to find the unit and set form values
     useEffect(() => {
-        if (unit) {
-            form.reset({
-                ...unit,
-                btu: unit.btu || 0
-            });
+        if (isInitialized && id) {
+            const foundUnit = getAcUnitById(id);
+            setUnit(foundUnit); // This will be ACUnit or null
+            if (foundUnit) {
+                 form.reset({
+                    ...foundUnit,
+                    btu: foundUnit.btu || 0
+                });
+            }
         }
-    }, [unit, form]);
+    }, [isInitialized, id, getAcUnitById, form]);
+
 
     const companyWatcher = form.watch('company');
 
