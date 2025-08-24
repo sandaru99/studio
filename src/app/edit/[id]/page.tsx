@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -53,26 +53,28 @@ export default function EditAcPage() {
     const router = useRouter();
     const params = useParams();
     const { toast } = useToast();
-    const { updateAcUnit, getAcUnitById, config, isInitialized } = useAppStore();
+    const { updateAcUnit, getAcUnitById, config, isInitialized, acUnits } = useAppStore();
     
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
     
-    // Directly get the unit in the render function. This ensures it's always up-to-date.
-    const unit = isInitialized ? getAcUnitById(id) : undefined;
+    const [unit, setUnit] = useState<ACUnit | null | undefined>(undefined);
 
     const form = useForm<FormData>({
         resolver: zodResolver(formSchema),
     });
-    
-    // Effect to reset the form whenever the unit data changes.
+
     useEffect(() => {
-        if (unit) {
-             form.reset({
-                ...unit,
-                btu: unit.btu || 0
-            });
+        if (isInitialized) {
+            const foundUnit = getAcUnitById(id);
+            setUnit(foundUnit);
+            if (foundUnit) {
+                form.reset({
+                    ...foundUnit,
+                    btu: foundUnit.btu || 0
+                });
+            }
         }
-    }, [unit, form]);
+    }, [id, isInitialized, getAcUnitById, form, acUnits]); // Depend on acUnits to re-check if it changes
 
     const companyWatcher = form.watch('company');
 
@@ -96,7 +98,7 @@ export default function EditAcPage() {
         router.push('/');
     };
 
-    if (!isInitialized || unit === undefined) {
+    if (unit === undefined) {
         return (
             <div className="flex flex-1 items-center justify-center p-8">
                 <div className="flex items-center gap-2 text-muted-foreground">
