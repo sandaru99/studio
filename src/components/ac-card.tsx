@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { 
-    Building, MapPin, Tag, Wrench, Thermometer, Power, Database, Hash, User, Home, Phone, ImageIcon
+    Building, MapPin, Tag, Wrench, Thermometer, Power, Database, Hash, User, Home, Phone, Link as LinkIcon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/hooks/use-app-store';
@@ -129,6 +129,15 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
             <Building className="w-4 h-4" />
             <p className="truncate flex-1" title={installLocation}>{installLocation}</p>
         </div>
+        
+        {mapLocation && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground w-full pt-2">
+              <MapPin className="w-4 h-4" />
+              <a href={mapLocation} target="_blank" rel="noopener noreferrer" className="truncate flex-1 text-blue-500 hover:underline" title={mapLocation}>
+                  {mapLocation}
+              </a>
+          </div>
+        )}
 
         {customerName && (
             <>
