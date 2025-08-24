@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -55,28 +55,18 @@ export default function EditAcPage() {
     const { toast } = useToast();
     const { getAcUnitById, updateAcUnit, config, isInitialized } = useAppStore();
     
-    const [unit, setUnit] = useState<ACUnit | null>(null);
-    const [loadingState, setLoadingState] = useState<'loading' | 'found' | 'not_found'>('loading');
-
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
+    const unit = getAcUnitById(id);
 
     const form = useForm<FormData>({
         resolver: zodResolver(acUnitSchema),
     });
 
     useEffect(() => {
-        if (isInitialized && id) {
-            const unitToEdit = getAcUnitById(id);
-            if (unitToEdit) {
-                setUnit(unitToEdit);
-                form.reset(unitToEdit);
-                setLoadingState('found');
-            } else {
-                setLoadingState('not_found');
-            }
+        if (unit) {
+            form.reset(unit);
         }
-    }, [isInitialized, id, getAcUnitById, form]);
-
+    }, [unit, form]);
 
     const onSubmit = (data: FormData) => {
         updateAcUnit(id, data);
@@ -87,7 +77,7 @@ export default function EditAcPage() {
         router.push('/modify');
     };
 
-    if (loadingState === 'loading') {
+    if (!isInitialized) {
         return (
             <div className="flex-1 flex-col p-8 gap-6">
                  <PageHeader title="Loading AC Unit Data..." description="Please wait while we fetch the details." />
@@ -95,10 +85,10 @@ export default function EditAcPage() {
         );
     }
 
-    if (loadingState === 'not_found') {
+    if (!unit) {
          return (
             <div className="flex-1 flex-col p-8 gap-6">
-                 <PageHeader title="AC Unit Not Found" description="The AC unit you are trying to edit does not exist." >
+                 <PageHeader title="AC Unit Not Found" description="The AC unit you are trying to edit does not exist or has been removed." >
                     <Button asChild variant="outline">
                         <Link href="/modify">
                             Back to Modify Page
