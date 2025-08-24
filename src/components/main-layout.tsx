@@ -2,7 +2,7 @@
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
   return (
-    <main className="container flex-1">
+    <main className="flex-1">
       {children}
     </main>
   );
