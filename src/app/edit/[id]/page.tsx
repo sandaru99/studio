@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -56,17 +56,21 @@ export default function EditAcPage() {
     const { getAcUnitById, updateAcUnit, config, isInitialized } = useAppStore();
     
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
-    const unit = getAcUnitById(id);
+    const [unit, setUnit] = useState<ACUnit | null | undefined>(undefined);
 
     const form = useForm<FormData>({
         resolver: zodResolver(acUnitSchema),
     });
 
     useEffect(() => {
-        if (unit) {
-            form.reset(unit);
+        if (isInitialized) {
+            const foundUnit = getAcUnitById(id);
+            setUnit(foundUnit);
+            if (foundUnit) {
+                form.reset(foundUnit);
+            }
         }
-    }, [unit, form]);
+    }, [id, isInitialized, getAcUnitById, form]);
 
     const onSubmit = (data: FormData) => {
         updateAcUnit(id, data);
@@ -77,7 +81,7 @@ export default function EditAcPage() {
         router.push('/modify');
     };
 
-    if (!isInitialized) {
+    if (unit === undefined || !isInitialized) {
         return (
             <div className="flex-1 flex-col p-8 gap-6">
                  <PageHeader title="Loading AC Unit Data..." description="Please wait while we fetch the details." />
@@ -102,7 +106,7 @@ export default function EditAcPage() {
     return (
         <div className="flex-1 flex-col p-4 md:p-6 lg:p-8 gap-6">
             <PageHeader
-                title={`Edit AC Unit: ${unit?.serialNumber}`}
+                title={`Edit AC Unit: ${unit.serialNumber}`}
                 description="Update the details for this AC unit."
             >
                 <Button asChild variant="outline">
