@@ -1,4 +1,6 @@
 
+"use client";
+
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { ACUnit } from '@/types';
@@ -27,6 +29,7 @@ const gasTypeColorMap: { [key: string]: string } = {
 export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
   const { config } = useAppStore();
   const [mapPreviewUrl, setMapPreviewUrl] = useState('');
+  const [universalMapLink, setUniversalMapLink] = useState('');
   
   const { 
       status, company, companyCity, brand, btu, modelNumber, serialNumber, installLocation, 
@@ -40,9 +43,11 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
         const lat = parts[0];
         const lng = parts[1];
         setMapPreviewUrl(`https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&output=embed`);
+        setUniversalMapLink(`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`);
       }
     } else {
       setMapPreviewUrl('');
+      setUniversalMapLink(mapLocation); // Fallback to original link
     }
   }, [mapLocation]);
   
@@ -133,8 +138,8 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
         {mapLocation && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground w-full pt-2">
               <MapPin className="w-4 h-4" />
-              <a href={mapLocation} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                  Open Map
+              <a href={universalMapLink} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                  Open in Map App
               </a>
           </div>
         )}

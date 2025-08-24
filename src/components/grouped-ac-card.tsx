@@ -1,4 +1,6 @@
 
+"use client";
+
 import { useState, useEffect } from 'react';
 import { ACUnit } from '@/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from './ui/card';
@@ -65,9 +67,9 @@ export function GroupedAcCard({ units, onCardClick, index }: GroupedAcCardProps)
       <ScrollArea className="flex-grow">
         <CardContent className="p-4 pt-0">
           <div className="space-y-4">
-            {units.map((unit, index) => (
+            {units.map((unit, idx) => (
               <div key={unit.id}>
-                {index > 0 && <Separator className="my-4" />}
+                {idx > 0 && <Separator className="my-4" />}
                 <AcCard unit={unit} isGrouped={true} onClick={() => onCardClick(unit)} />
               </div>
             ))}
