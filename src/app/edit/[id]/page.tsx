@@ -57,15 +57,20 @@ export default function EditAcPage() {
     
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
     
+    const [unit, setUnit] = useState<ACUnit | null | undefined>(undefined);
+
     const form = useForm<FormData>({
         resolver: zodResolver(acUnitSchema),
     });
-    
-    // Directly get the unit from the store. This will re-evaluate on renders.
-    const unit = getAcUnitById(id);
 
     useEffect(() => {
-        // Only reset the form if the unit is found.
+        if (isInitialized) {
+            const foundUnit = getAcUnitById(id);
+            setUnit(foundUnit); // This will be the unit object or null
+        }
+    }, [isInitialized, id, getAcUnitById]);
+
+    useEffect(() => {
         if (unit) {
             form.reset(unit);
         }
@@ -77,11 +82,11 @@ export default function EditAcPage() {
             title: "Success! 🎉",
             description: `AC unit ${data.serialNumber} has been updated.`,
         });
-        router.push('/modify');
+        router.push('/');
     };
     
-    // 1. Show loading state until the store is initialized
-    if (!isInitialized) {
+    // Initial loading state before app is initialized
+    if (unit === undefined) {
         return (
             <div className="flex-1 flex-col p-8 gap-6">
                  <PageHeader title="Loading AC Unit Data..." description="Please wait while we fetch the details." />
@@ -89,8 +94,8 @@ export default function EditAcPage() {
         );
     }
     
-    // 2. After initialization, if no unit is found, show the not found message.
-    if (!unit) {
+    // After initialization, if no unit is found (unit is null)
+    if (unit === null) {
          return (
             <div className="flex-1 flex-col p-8 gap-6">
                  <PageHeader title="AC Unit Not Found" description="The AC unit you are trying to edit does not exist or has been removed." >
@@ -104,7 +109,7 @@ export default function EditAcPage() {
         );
     }
 
-    // 3. If the unit is found, render the form.
+    // If the unit is found, render the form.
     return (
         <div className="flex-1 flex-col p-4 md:p-6 lg:p-8 gap-6">
             <PageHeader
