@@ -26,8 +26,7 @@ const gasTypeColorMap: { [key: string]: string } = {
 
 export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
   const { config } = useAppStore();
-  const [mapPreviewUrl, setMapPreviewUrl] = useState('');
-
+  
   const { 
       status, company, companyCity, brand, btu, modelNumber, serialNumber, installLocation, 
       acType, inverter, gasType, customerName, customerAddress, customerContact, mapLocation
@@ -41,19 +40,6 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
   const gasColorClass = gasTypeColorMap[gasType.toLowerCase()] || '';
   const companyInfo = config.companies.find(c => c.name === company);
   const companyColor = companyInfo?.color || '#A0A0A0';
-
-  useEffect(() => {
-    if (mapLocation && mapLocation.includes('@')) {
-      const parts = mapLocation.split('@')[1]?.split(',');
-      if (parts?.length >= 2) {
-        const lat = parts[0];
-        const lng = parts[1];
-        setMapPreviewUrl(`https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&output=embed`);
-      }
-    } else {
-      setMapPreviewUrl('');
-    }
-  }, [mapLocation]);
 
   const CardComponent = isGrouped ? 'div' : Card;
 
@@ -143,12 +129,7 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
         )}
       </CardContent>
        {mapLocation && (
-        <CardFooter className="p-4 pt-0 flex-col items-start gap-4">
-          {mapPreviewUrl && (
-             <div className="rounded-lg overflow-hidden border w-full h-40">
-                <iframe width="100%" height="100%" style={{ border: 0 }} loading="lazy" allowFullScreen src={mapPreviewUrl}></iframe>
-             </div>
-           )}
+        <CardFooter className="p-4 pt-0">
           <a
             href={mapLocation}
             target="_blank"
