@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/hooks/use-app-store';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
-import { Home, FileDown, ArrowUpDown } from 'lucide-react';
+import { Home, FileDown, ArrowUpDown, Pencil } from 'lucide-react';
 import { ACUnit } from '@/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from '@/components/ui/input';
@@ -163,6 +163,7 @@ export default function ReportPage() {
                                         </div>
                                     </TableHead>
                                 ))}
+                                <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -181,11 +182,19 @@ export default function ReportPage() {
                                         <TableCell className="capitalize">{unit.status}</TableCell>
                                         <TableCell>{unit.btu}</TableCell>
                                         <TableCell>{unit.installLocation}</TableCell>
+                                        <TableCell className="text-right">
+                                            <Button asChild variant="ghost" size="icon">
+                                                <Link href={`/edit/${unit.id}`}>
+                                                    <Pencil className="h-4 w-4" />
+                                                    <span className="sr-only">Edit</span>
+                                                </Link>
+                                            </Button>
+                                        </TableCell>
                                     </TableRow>
                                 ))
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                                    <TableCell colSpan={columns.length + 1} className="h-24 text-center">
                                         No results found.
                                     </TableCell>
                                 </TableRow>

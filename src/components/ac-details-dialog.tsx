@@ -6,7 +6,7 @@ import { ACUnit } from "@/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { AcCard } from "./ac-card";
 import { Button } from "./ui/button";
-import { Trash2 } from "lucide-react";
+import { Trash2, Pencil } from "lucide-react";
 import { useAppStore } from "@/hooks/use-app-store";
 import {
   AlertDialog,
@@ -20,6 +20,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 
 interface AcDetailsDialogProps {
@@ -58,7 +59,13 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
                     <AcCard unit={unit} />
                 </div>
                 
-                <DialogFooter className="sm:justify-end">
+                <DialogFooter className="sm:justify-end gap-2">
+                     <Button asChild variant="outline">
+                        <Link href={`/edit/${unit.id}`}>
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Edit
+                        </Link>
+                    </Button>
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant="destructive">
