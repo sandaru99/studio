@@ -20,6 +20,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/hooks/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 interface AcDetailsDialogProps {
     unit: ACUnit | null;
@@ -28,7 +30,7 @@ interface AcDetailsDialogProps {
 }
 
 export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogProps) {
-    const { removeAcUnit } = useAppStore();
+    const { removeAcUnit, updateAcUnit, config } = useAppStore();
     const { toast } = useToast();
 
     if (!unit) return null;
@@ -40,6 +42,17 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
             description: `The unit ${unit.serialNumber} has been successfully removed.`
         })
         onOpenChange(false); // Close the dialog
+    }
+
+    const handleStatusChange = (newStatus: string) => {
+        if (unit) {
+            const updatedUnit = { ...unit, status: newStatus };
+            updateAcUnit(unit.id, updatedUnit);
+            toast({
+                title: "Status Updated",
+                description: `Unit ${unit.serialNumber} status changed to ${newStatus}.`
+            })
+        }
     }
 
     return (
@@ -56,6 +69,29 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
                     <AcCard unit={unit} />
                 </div>
                 
+                <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="status" className="text-right">
+                            Status
+                        </Label>
+                        <Select
+                            value={unit.status}
+                            onValueChange={handleStatusChange}
+                        >
+                            <SelectTrigger className="col-span-3">
+                                <SelectValue placeholder="Select a status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {config.statuses.map((status) => (
+                                <SelectItem key={status.name} value={status.name} className="capitalize">
+                                    {status.name}
+                                </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+
                 <DialogFooter className="sm:justify-end gap-2">
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
