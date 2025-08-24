@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -55,29 +56,12 @@ export default function EditAcPage() {
     const { getAcUnitById, updateAcUnit, config, isInitialized } = useAppStore();
     
     const [unit, setUnit] = useState<ACUnit | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [loadingState, setLoadingState] = useState<'loading' | 'found' | 'not_found'>('loading');
 
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
 
     const form = useForm<FormData>({
         resolver: zodResolver(acUnitSchema),
-        defaultValues: {
-            company: '',
-            companyCity: '',
-            mapLocation: '',
-            modelNumber: '',
-            serialNumber: '',
-            inverter: '',
-            brand: '',
-            btu: 0,
-            gasType: '',
-            acType: '',
-            status: '',
-            installLocation: '',
-            customerName: '',
-            customerAddress: '',
-            customerContact: '',
-        },
     });
 
     useEffect(() => {
@@ -86,8 +70,10 @@ export default function EditAcPage() {
             if (unitToEdit) {
                 setUnit(unitToEdit);
                 form.reset(unitToEdit);
+                setLoadingState('found');
+            } else {
+                setLoadingState('not_found');
             }
-            setIsLoading(false);
         }
     }, [isInitialized, id, getAcUnitById, form]);
 
@@ -101,7 +87,7 @@ export default function EditAcPage() {
         router.push('/modify');
     };
 
-    if (isLoading) {
+    if (loadingState === 'loading') {
         return (
             <div className="flex-1 flex-col p-8 gap-6">
                  <PageHeader title="Loading AC Unit Data..." description="Please wait while we fetch the details." />
@@ -109,7 +95,7 @@ export default function EditAcPage() {
         );
     }
 
-    if (!unit) {
+    if (loadingState === 'not_found') {
          return (
             <div className="flex-1 flex-col p-8 gap-6">
                  <PageHeader title="AC Unit Not Found" description="The AC unit you are trying to edit does not exist." >
@@ -126,7 +112,7 @@ export default function EditAcPage() {
     return (
         <div className="flex-1 flex-col p-4 md:p-6 lg:p-8 gap-6">
             <PageHeader
-                title={`Edit AC Unit: ${unit.serialNumber}`}
+                title={`Edit AC Unit: ${unit?.serialNumber}`}
                 description="Update the details for this AC unit."
             >
                 <Button asChild variant="outline">
