@@ -133,8 +133,8 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
         {mapLocation && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground w-full pt-2">
               <MapPin className="w-4 h-4" />
-              <a href={mapLocation} target="_blank" rel="noopener noreferrer" className="truncate flex-1 text-blue-500 hover:underline" title={mapLocation}>
-                  {mapLocation}
+              <a href={mapLocation} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                  Open Map
               </a>
           </div>
         )}
