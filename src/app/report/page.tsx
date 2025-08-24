@@ -32,10 +32,6 @@ export default function ReportPage() {
         }
     };
 
-    const handleRowClick = (unitId: string) => {
-        router.push(`/edit/${unitId}`);
-    };
-
     const sortedAndFilteredUnits = useMemo(() => {
         let units = [...acUnits];
 
@@ -174,9 +170,8 @@ export default function ReportPage() {
                                 sortedAndFilteredUnits.map(unit => (
                                     <TableRow 
                                         key={unit.id} 
-                                        className="animate-fade-in cursor-pointer" 
+                                        className="animate-fade-in" 
                                         style={{ animationDelay: '150ms' }}
-                                        onClick={() => handleRowClick(unit.id)}
                                     >
                                         <TableCell className="font-medium capitalize">{unit.company}</TableCell>
                                         <TableCell>{unit.companyCity}</TableCell>

@@ -6,7 +6,7 @@ import { ACUnit } from "@/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { AcCard } from "./ac-card";
 import { Button } from "./ui/button";
-import { Pencil, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useAppStore } from "@/hooks/use-app-store";
 import {
   AlertDialog,
@@ -44,11 +44,6 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
         onOpenChange(false); // Close the dialog
     }
 
-    const handleEdit = () => {
-        router.push(`/edit/${unit.id}`);
-        onOpenChange(false);
-    }
-
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-lg">
@@ -63,13 +58,7 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
                     <AcCard unit={unit} />
                 </div>
                 
-                <DialogFooter className="sm:justify-between">
-                    <div>
-                        <Button variant="outline" onClick={handleEdit}>
-                            <Pencil className="w-4 h-4 mr-2" />
-                            Edit
-                        </Button>
-                    </div>
+                <DialogFooter className="sm:justify-end">
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant="destructive">
