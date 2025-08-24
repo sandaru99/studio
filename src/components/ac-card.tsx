@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { ACUnit } from '@/types';
@@ -64,7 +65,7 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
     <CardComponent 
         className={cn(
             "flex flex-col h-full bg-card", 
-            !isGrouped && "hover:shadow-xl transition-shadow duration-300",
+            !isGrouped && "transition-shadow duration-300 hover:shadow-xl",
             onClick && "cursor-pointer"
         )}
         style={!isGrouped ? {

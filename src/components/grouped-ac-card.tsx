@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { ACUnit } from '@/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from './ui/card';
@@ -84,6 +85,7 @@ export function GroupedAcCard({ units, onCardClick, index }: GroupedAcCardProps)
             href={firstUnit.mapLocation}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
             className="w-full flex items-center justify-center gap-2 text-sm text-primary hover:underline"
           >
             <MapPin className="w-4 h-4" />
