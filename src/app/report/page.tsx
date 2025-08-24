@@ -3,7 +3,6 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/hooks/use-app-store';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
@@ -18,7 +17,6 @@ type SortKey = keyof ACUnit | '';
 export default function ReportPage() {
     const { acUnits, isInitialized } = useAppStore();
     const { toast } = useToast();
-    const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
     const [sortKey, setSortKey] = useState<SortKey>('company');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -33,7 +31,7 @@ export default function ReportPage() {
     };
 
     const handleRowClick = (unitId: string) => {
-        router.push(`/edit/${unitId}`);
+        window.open(`/edit/${unitId}`, '_blank');
     };
 
     const sortedAndFilteredUnits = useMemo(() => {

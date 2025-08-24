@@ -1,3 +1,4 @@
+
 "use client";
 
 import { ACUnit } from "@/types";
@@ -18,7 +19,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
 
 
 interface AcDetailsDialogProps {
@@ -28,7 +28,6 @@ interface AcDetailsDialogProps {
 }
 
 export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogProps) {
-    const router = useRouter();
     const { removeAcUnit } = useAppStore();
     const { toast } = useToast();
 
@@ -44,7 +43,7 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
     }
 
     const handleEdit = () => {
-        router.push(`/edit/${unit.id}`);
+        window.open(`/edit/${unit.id}`, '_blank');
         onOpenChange(false);
     }
 
