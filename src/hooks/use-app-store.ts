@@ -5,7 +5,7 @@ import { AppContext } from '@/contexts/app-provider';
 
 export const useAppStore = () => {
   const context = useContext(AppContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useAppStore must be used within an AppProvider');
   }
   return context;
