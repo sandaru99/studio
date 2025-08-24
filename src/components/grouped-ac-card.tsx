@@ -51,7 +51,9 @@ export function GroupedAcCard({ units, onCardClick, index }: GroupedAcCardProps)
       <CardHeader>
         <div className="flex justify-between items-start">
           <div>
-            <CardTitle className="text-lg font-bold capitalize" style={{ color: companyColor }}>{company}</CardTitle>
+            <div className="inline-block bg-muted px-3 py-1 rounded-md mb-2">
+                <CardTitle className="text-lg font-bold capitalize" style={{ color: companyColor }}>{company}</CardTitle>
+            </div>
             <CardDescription className="flex items-center gap-2 text-sm text-muted-foreground">
               <MapPin className="w-4 h-4" />
               <span className="font-bold">{companyCity}</span>
