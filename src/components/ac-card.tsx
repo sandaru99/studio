@@ -128,20 +128,6 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
             </>
         )}
       </CardContent>
-       {mapLocation && (
-        <CardFooter className="p-4 pt-0">
-          <a
-            href={mapLocation}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="w-full flex items-center justify-center gap-2 text-sm text-primary hover:underline"
-          >
-            <MapPin className="w-4 h-4" />
-            View on Google Maps
-          </a>
-        </CardFooter>
-      )}
     </CardComponent>
   );
 }

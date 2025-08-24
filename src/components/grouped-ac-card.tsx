@@ -74,23 +74,11 @@ export function GroupedAcCard({ units, onCardClick, index }: GroupedAcCardProps)
           </div>
         </CardContent>
       </ScrollArea>
-      {firstUnit.mapLocation && (
-        <CardFooter className="p-4 pt-0 flex-col items-start gap-4">
-           {mapPreviewUrl && (
-             <div className="rounded-lg overflow-hidden border w-full h-40">
-                <iframe width="100%" height="100%" style={{ border: 0 }} loading="lazy" allowFullScreen src={mapPreviewUrl}></iframe>
-             </div>
-           )}
-           <a
-            href={firstUnit.mapLocation}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="w-full flex items-center justify-center gap-2 text-sm text-primary hover:underline"
-          >
-            <MapPin className="w-4 h-4" />
-            Google Map Location
-          </a>
+      {firstUnit.mapLocation && mapPreviewUrl && (
+        <CardFooter className="p-4 pt-0">
+           <div className="rounded-lg overflow-hidden border w-full h-40">
+              <iframe width="100%" height="100%" style={{ border: 0 }} loading="lazy" allowFullScreen src={mapPreviewUrl}></iframe>
+           </div>
         </CardFooter>
       )}
     </Card>
