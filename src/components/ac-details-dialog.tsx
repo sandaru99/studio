@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useRouter } from "next/navigation";
 import { ACUnit } from "@/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { AcCard } from "./ac-card";
@@ -30,6 +31,7 @@ interface AcDetailsDialogProps {
 export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogProps) {
     const { removeAcUnit } = useAppStore();
     const { toast } = useToast();
+    const router = useRouter();
 
     if (!unit) return null;
 
@@ -43,7 +45,7 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
     }
 
     const handleEdit = () => {
-        window.open(`/edit/${unit.id}`, '_blank');
+        router.push(`/edit/${unit.id}`);
         onOpenChange(false);
     }
 
