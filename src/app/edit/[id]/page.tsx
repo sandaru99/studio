@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -81,16 +82,19 @@ export default function EditAcPage() {
     });
 
     useEffect(() => {
-        if (isInitialized && id && acUnits.length > 0) {
-            const unitId = Array.isArray(id) ? id[0] : id;
-            const unitToEdit = acUnits.find(u => u.id === unitId);
-            if (unitToEdit) {
-                setUnit(unitToEdit);
-                form.reset(unitToEdit);
-            } else {
-                toast({ variant: 'destructive', title: "Error", description: "AC Unit not found." });
-                router.push('/');
-            }
+        if (!isInitialized) return;
+
+        const unitId = Array.isArray(id) ? id[0] : id;
+        if (!unitId) return;
+
+        const unitToEdit = acUnits.find(u => u.id === unitId);
+
+        if (unitToEdit) {
+            setUnit(unitToEdit);
+            form.reset(unitToEdit);
+        } else {
+            toast({ variant: 'destructive', title: "Error", description: "AC Unit not found." });
+            router.push('/');
         }
     }, [id, acUnits, isInitialized, form, router, toast]);
     
