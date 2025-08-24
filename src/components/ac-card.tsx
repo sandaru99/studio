@@ -135,15 +135,6 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
             <p className="truncate flex-1" title={installLocation}>{installLocation}</p>
         </div>
         
-        {mapLocation && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground w-full pt-2">
-              <MapPin className="w-4 h-4" />
-              <a href={universalMapLink} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                  Open in Map App
-              </a>
-          </div>
-        )}
-
         {customerName && (
             <>
                 <Separator />
@@ -156,11 +147,19 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
             </>
         )}
       </CardContent>
-      {!isGrouped && mapLocation && mapPreviewUrl && (
-        <CardFooter className="p-6 pt-0">
-           <div className="rounded-lg overflow-hidden border w-full h-48">
-              <iframe width="100%" height="100%" style={{ border: 0 }} loading="lazy" allowFullScreen src={mapPreviewUrl}></iframe>
-           </div>
+      {!isGrouped && mapLocation && (
+        <CardFooter className="p-6 pt-0 flex-col gap-4 items-start">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground w-full">
+                <MapPin className="w-4 h-4" />
+                <a href={universalMapLink} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                    Open in Map App
+                </a>
+            </div>
+            {mapPreviewUrl && (
+              <div className="rounded-lg overflow-hidden border w-full h-48">
+                  <iframe width="100%" height="100%" style={{ border: 0 }} loading="lazy" allowFullScreen src={mapPreviewUrl}></iframe>
+              </div>
+            )}
         </CardFooter>
       )}
     </CardComponent>
