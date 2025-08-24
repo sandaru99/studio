@@ -26,11 +26,25 @@ const gasTypeColorMap: { [key: string]: string } = {
 
 export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
   const { config } = useAppStore();
+  const [mapPreviewUrl, setMapPreviewUrl] = useState('');
   
   const { 
       status, company, companyCity, brand, btu, modelNumber, serialNumber, installLocation, 
       acType, inverter, gasType, customerName, customerAddress, customerContact, mapLocation
   } = unit;
+  
+  useEffect(() => {
+    if (mapLocation && mapLocation.includes('@')) {
+      const parts = mapLocation.split('@')[1]?.split(',');
+      if (parts?.length >= 2) {
+        const lat = parts[0];
+        const lng = parts[1];
+        setMapPreviewUrl(`https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&output=embed`);
+      }
+    } else {
+      setMapPreviewUrl('');
+    }
+  }, [mapLocation]);
   
   const statusInfo = config.statuses.find(s => s.name === status);
   const statusColor = statusInfo?.color || '#A0A0A0';
@@ -128,8 +142,13 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
             </>
         )}
       </CardContent>
+      {!isGrouped && mapLocation && mapPreviewUrl && (
+        <CardFooter className="p-6 pt-0">
+           <div className="rounded-lg overflow-hidden border w-full h-48">
+              <iframe width="100%" height="100%" style={{ border: 0 }} loading="lazy" allowFullScreen src={mapPreviewUrl}></iframe>
+           </div>
+        </CardFooter>
+      )}
     </CardComponent>
   );
 }
-
-    
