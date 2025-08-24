@@ -58,7 +58,7 @@ export default function EditAcPage() {
     const { toast } = useToast();
     const { getAcUnitById, updateAcUnit, config, isInitialized } = useAppStore();
     const [mapPreviewUrl, setMapPreviewUrl] = useState('');
-    const [unit, setUnit] = useState<ACUnit | null | undefined>(undefined);
+    const [isLoading, setIsLoading] = useState(true);
 
     const form = useForm<FormData>({
         resolver: zodResolver(formSchema),
@@ -82,29 +82,21 @@ export default function EditAcPage() {
     });
 
     useEffect(() => {
-        if (!isInitialized) return;
-
         const unitId = Array.isArray(id) ? id[0] : id;
-        if (!unitId) return;
+        if (!unitId || !isInitialized) return;
 
         const unitToEdit = getAcUnitById(unitId);
 
         if (unitToEdit) {
-            setUnit(unitToEdit);
             form.reset(unitToEdit);
+            setIsLoading(false);
         } else {
-             // If the store is initialized but the unit is not found, it's a real error
-            setUnit(null);
-        }
-    }, [id, isInitialized, getAcUnitById, form]);
-
-    useEffect(() => {
-        if (unit === null) {
+            // Unit not found, show error and redirect
             toast({ variant: 'destructive', title: "Error", description: "AC Unit not found." });
             router.push('/');
         }
-    }, [unit, router, toast]);
-    
+    }, [id, isInitialized, getAcUnitById, form, router, toast]);
+
     const companyWatcher = form.watch('company');
     const mapLocationWatcher = form.watch('mapLocation');
 
@@ -132,7 +124,7 @@ export default function EditAcPage() {
         router.push('/');
     };
     
-    if (unit === undefined) {
+    if (isLoading) {
         return (
             <div className="flex-1 flex flex-col p-4 md:p-6 lg:p-8 gap-6 space-y-8">
                 <PageHeader title="Edit AC Unit" description="Loading unit details...">
@@ -286,5 +278,3 @@ export default function EditAcPage() {
         </div>
     );
 }
-
-    
