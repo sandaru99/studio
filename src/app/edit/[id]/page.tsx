@@ -20,7 +20,7 @@ import { useToast } from '@/hooks/use-toast';
 import { PageHeader } from '@/components/page-header';
 import { MapPin, Home } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ACUnit } from '@/types';
+import type { ACUnit } from '@/types';
 
 const formSchema = z.object({
   id: z.string(),
@@ -56,9 +56,9 @@ export default function EditAcPage() {
     const params = useParams();
     const { id } = params;
     const { toast } = useToast();
-    const { acUnits, updateAcUnit, config, isInitialized } = useAppStore();
+    const { getAcUnitById, updateAcUnit, config, isInitialized } = useAppStore();
     const [mapPreviewUrl, setMapPreviewUrl] = useState('');
-    const [unit, setUnit] = useState<ACUnit | null>(null);
+    const [unit, setUnit] = useState<ACUnit | null | undefined>(undefined);
 
     const form = useForm<FormData>({
         resolver: zodResolver(formSchema),
@@ -87,16 +87,23 @@ export default function EditAcPage() {
         const unitId = Array.isArray(id) ? id[0] : id;
         if (!unitId) return;
 
-        const unitToEdit = acUnits.find(u => u.id === unitId);
+        const unitToEdit = getAcUnitById(unitId);
 
         if (unitToEdit) {
             setUnit(unitToEdit);
             form.reset(unitToEdit);
         } else {
+             // If the store is initialized but the unit is not found, it's a real error
+            setUnit(null);
+        }
+    }, [id, isInitialized, getAcUnitById, form]);
+
+    useEffect(() => {
+        if (unit === null) {
             toast({ variant: 'destructive', title: "Error", description: "AC Unit not found." });
             router.push('/');
         }
-    }, [id, acUnits, isInitialized, form, router, toast]);
+    }, [unit, router, toast]);
     
     const companyWatcher = form.watch('company');
     const mapLocationWatcher = form.watch('mapLocation');
@@ -125,7 +132,7 @@ export default function EditAcPage() {
         router.push('/');
     };
     
-    if (!isInitialized || !unit) {
+    if (unit === undefined) {
         return (
             <div className="flex-1 flex flex-col p-4 md:p-6 lg:p-8 gap-6 space-y-8">
                 <PageHeader title="Edit AC Unit" description="Loading unit details...">
@@ -150,7 +157,7 @@ export default function EditAcPage() {
     }
 
     return (
-        <div className="flex-1 flex-col p-4 md:p-6 lg:p-8 gap-6">
+        <div className="flex-1 flex-col p-4 md:p-6 lg:p-8 gap-6 animate-fade-in">
             <PageHeader
                 title="Edit AC Unit"
                 description={`Editing details for serial number: ${form.getValues('serialNumber')}`}

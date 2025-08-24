@@ -121,6 +121,7 @@ const sampleAcUnits: Omit<ACUnit, 'id'>[] = [
 const initialState: AppState = {
   acUnits: [],
   config: initialConfig,
+  getAcUnitById: () => undefined,
   addAcUnit: () => {},
   addAcUnits: () => {},
   removeAcUnit: () => {},
@@ -198,6 +199,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [acUnits, config, isInitialized]);
 
+  const getAcUnitById = useCallback((id: string) => {
+    return acUnits.find(unit => unit.id === id);
+  }, [acUnits]);
+
   const addAcUnit = useCallback((unit: Omit<ACUnit, 'id'>) => {
     setAcUnits(prev => [...prev, { ...unit, id: new Date().toISOString() + Math.random() }]);
   }, []);
@@ -225,8 +230,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AppContext.Provider value={{ acUnits, config, addAcUnit, addAcUnits, removeAcUnit, updateAcUnit, updateConfig, importData, isInitialized }}>
+    <AppContext.Provider value={{ acUnits, config, getAcUnitById, addAcUnit, addAcUnits, removeAcUnit, updateAcUnit, updateConfig, importData, isInitialized }}>
       {children}
     </AppContext.Provider>
   );
 };
+
+    

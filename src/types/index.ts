@@ -34,6 +34,7 @@ export type ACUnit = {
 export interface AppState {
   acUnits: ACUnit[];
   config: AppConfig;
+  getAcUnitById: (id: string) => ACUnit | undefined;
   addAcUnit: (unit: Omit<ACUnit, 'id'>) => void;
   addAcUnits: (units: Omit<ACUnit, 'id'>[]) => void;
   removeAcUnit: (id: string) => void;
@@ -52,3 +53,5 @@ export interface AppConfig {
   acTypes: string[];
   inverterOptions: string[];
 }
+
+    
