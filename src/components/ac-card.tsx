@@ -58,7 +58,7 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
   const CardComponent = isGrouped ? 'div' : Card;
 
   const BrandDisplay = () => {
-    return <p className="font-semibold text-primary capitalize">{brand}</p>;
+    return <p className="font-semibold text-foreground capitalize text-lg">{brand}</p>;
   };
 
   return (
@@ -100,10 +100,10 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
                     <Tag className="w-5 h-5 text-primary" />
                 </div>
             )}
-            <div>
+            <div className="text-lg">
                 { !isGrouped && <BrandDisplay />}
                 <p className="font-bold">{modelNumber}</p>
-                <p className="font-bold flex items-center gap-2 pt-1"><Hash className="w-3 h-3"/> {serialNumber}</p>
+                <p className="font-bold flex items-center gap-2 pt-1"><Hash className="w-4 h-4"/> {serialNumber}</p>
             </div>
         </div>
 
