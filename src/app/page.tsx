@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo } from 'react';
@@ -8,7 +9,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/com
 import { useAppStore } from '@/hooks/use-app-store';
 import { PageHeader } from '@/components/page-header';
 import { GroupedAcCard } from '@/components/grouped-ac-card';
-import { PlusCircle, Settings, List } from 'lucide-react';
+import { PlusCircle, Settings, List, Pencil } from 'lucide-react';
 import { ACUnit } from '@/types';
 import { AcDetailsDialog } from '@/components/ac-details-dialog';
 
@@ -76,6 +77,12 @@ export default function Home() {
             <Link href="/report">
               <List className="h-4 w-4" />
               <span className="sr-only">Data Report</span>
+            </Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/modify">
+              <Pencil className="h-4 w-4" />
+              <span className="sr-only">Modify ACs</span>
             </Link>
           </Button>
           <Button asChild variant="outline">
