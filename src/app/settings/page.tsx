@@ -31,7 +31,7 @@ export default function SettingsPage() {
     const handleExport = () => {
         const dataStr = JSON.stringify({ config, acUnits }, null, 2);
         const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-        const exportFileDefaultName = 'airwave_ac_data.json';
+        const exportFileDefaultName = 'ac_manager_data.json';
         const linkElement = document.createElement('a');
         linkElement.setAttribute('href', dataUri);
         linkElement.setAttribute('download', exportFileDefaultName);

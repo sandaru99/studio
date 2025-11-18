@@ -140,7 +140,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     try {
-      const storedState = localStorage.getItem('airwave_app_state');
+      const storedState = localStorage.getItem('ac_manager_state');
       if (storedState) {
         const { acUnits: storedUnits, config: storedConfig } = JSON.parse(storedState);
         if (storedUnits && storedUnits.length > 0) {
@@ -191,7 +191,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     if (isInitialized) {
       try {
         const stateToStore = JSON.stringify({ acUnits, config });
-        localStorage.setItem('airwave_app_state', stateToStore);
+        localStorage.setItem('ac_manager_state', stateToStore);
       } catch (error)
 {
         console.error("Failed to save state to localStorage", error);

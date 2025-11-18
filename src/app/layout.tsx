@@ -8,7 +8,7 @@ import { MainLayout } from '@/components/main-layout';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
-  title: 'AirWave AC Manager',
+  title: 'AC Manager',
   description: 'Manage your AC unit details with ease.',
 };
 
