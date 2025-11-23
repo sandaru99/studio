@@ -1,3 +1,4 @@
+
 "use client";
 
 import { createContext, useState, useEffect, useCallback, ReactNode } from 'react';
@@ -27,95 +28,7 @@ const initialConfig: AppConfig = {
   inverterOptions: ['inverter', 'noninverter'],
 };
 
-const sampleAcUnits: Omit<ACUnit, 'id'>[] = [
-    {
-        modelNumber: 'CS-YN12WKJ',
-        serialNumber: 'SN-001-PAN',
-        inverter: 'inverter',
-        brand: 'panasonic',
-        btu: 12000,
-        gasType: 'r32',
-        acType: 'split',
-        status: 'active',
-        mapLocation: 'https://maps.app.goo.gl/abcdef123456',
-        installLocation: 'Main Hall',
-        company: 'boc',
-        companyCity: 'Colombo',
-    },
-    {
-        modelNumber: 'AR18TYHYEWKNST',
-        serialNumber: 'SN-002-SAM',
-        inverter: 'inverter',
-        brand: 'samsung',
-        btu: 18000,
-        gasType: 'r410a',
-        acType: 'split',
-        status: 'active',
-        mapLocation: 'https://maps.app.goo.gl/bcdefg234567',
-        installLocation: 'CEO Office',
-        company: 'asiri',
-        companyCity: 'Kandy',
-    },
-    {
-        modelNumber: 'LSU-12HUV',
-        serialNumber: 'SN-003-LG',
-        inverter: 'noninverter',
-        brand: 'lg',
-        btu: 12000,
-        gasType: 'r22',
-        acType: 'cassete',
-        status: 'breakdown',
-        mapLocation: 'https://maps.app.goo.gl/cdefgh345678',
-        installLocation: 'Server Room',
-        company: 'nsb',
-        companyCity: 'Galle',
-    },
-    {
-        modelNumber: 'MSY-GN18VF',
-        serialNumber: 'SN-004-MIT',
-        inverter: 'inverter',
-        brand: 'mitsubishi',
-        btu: 18000,
-        gasType: 'r32',
-        acType: 'ceiling suspend',
-        status: 'removed',
-        mapLocation: 'https://maps.app.goo.gl/defghi456789',
-        installLocation: 'Old Office, 3rd Floor',
-        company: 'hnb',
-        companyCity: 'Colombo',
-    },
-    {
-        modelNumber: 'TAC-09CSD',
-        serialNumber: 'SN-005-TCL',
-        inverter: 'noninverter',
-        brand: 'tcl',
-        btu: 9000,
-        gasType: 'r410a',
-        acType: 'split',
-        status: 'active',
-        mapLocation: 'https://maps.app.goo.gl/efghij567890',
-        installLocation: 'Reception Area',
-        company: 'boc',
-        companyCity: 'Jaffna',
-    },
-     {
-        modelNumber: 'CASA-12-PRO',
-        serialNumber: 'SN-006-CUS',
-        inverter: 'inverter',
-        brand: 'media',
-        btu: 12000,
-        gasType: 'r32',
-        acType: 'split',
-        status: 'active',
-        mapLocation: 'https://maps.app.goo.gl/fghijk678901',
-        installLocation: 'Master Bedroom',
-        company: 'customer',
-        companyCity: 'Negombo',
-        customerName: 'Nimal Perera',
-        customerAddress: '12, Sea Street, Negombo',
-        customerContact: '0712345678',
-    },
-];
+const sampleAcUnits: Omit<ACUnit, 'id'>[] = [];
 
 
 const initialState: AppState = {
@@ -151,17 +64,19 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         if (storedConfig) {
              // Merge stored config with initial config to prevent missing keys on update
              const mergedConfig = { ...initialConfig, ...storedConfig };
-             if (storedConfig.companies && Array.isArray(storedConfig.companies) && storedConfig.companies.every((c: any) => typeof c === 'string')) {
-                const newCompanies = storedConfig.companies.map((name: string) => {
+             if (storedConfig.companies && Array.isArray(storedConfig.companies) && storedConfig.companies.every((c: any) => typeof c === 'string' || (typeof c === 'object' && c.name))) {
+                const newCompanies = storedConfig.companies.map((company: any) => {
+                    const name = typeof company === 'string' ? company : company.name;
                     const existing = initialConfig.companies.find(ic => ic.name === name);
-                    return existing || { name, color: '#CCCCCC' };
+                    return existing || { name, color: company.color ||'#CCCCCC' };
                 });
                 mergedConfig.companies = newCompanies;
              }
-              if (storedConfig.statuses && Array.isArray(storedConfig.statuses) && storedConfig.statuses.every((s: any) => typeof s === 'string')) {
-                const newStatuses = storedConfig.statuses.map((name: string) => {
+              if (storedConfig.statuses && Array.isArray(storedConfig.statuses) && storedConfig.statuses.every((s: any) => typeof s === 'string' || (typeof s === 'object' && s.name))) {
+                const newStatuses = storedConfig.statuses.map((status: any) => {
+                    const name = typeof status === 'string' ? status : status.name;
                     const existing = initialConfig.statuses.find(is => is.name === name);
-                    return existing || { name, color: '#CCCCCC' };
+                    return existing || { name, color: status.color || '#CCCCCC' };
                 });
                 mergedConfig.statuses = newStatuses;
              }
