@@ -124,7 +124,7 @@ export default function AddAcPage() {
                                             </FormControl>
                                             <SelectContent>
                                                 {config.companies.map(c => <SelectItem key={c.name} value={c.name} className="capitalize">{c.name}</SelectItem>)}
-                                                <SelectItem value="CUSTOMER">Private Customer</SelectItem>
+                                                <SelectItem value="CUSTOMER">CUSTOMER</SelectItem>
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
@@ -234,5 +234,3 @@ export default function AddAcPage() {
         </div>
     );
 }
-
-    
