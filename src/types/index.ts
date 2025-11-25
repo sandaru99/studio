@@ -1,3 +1,4 @@
+
 export type Company = {
   name: string;
   color: string;
@@ -53,5 +54,3 @@ export interface AppConfig {
   acTypes: string[];
   inverterOptions: string[];
 }
-
-    
