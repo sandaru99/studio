@@ -49,6 +49,11 @@ export default function Home() {
     return Object.values(groups);
   }, [filteredAcUnits]);
 
+  const uniqueCompanies = useMemo(() => {
+    const companyNames = new Set(acUnits.map(unit => unit.company));
+    return Array.from(companyNames).sort();
+  }, [acUnits]);
+
   const uniqueCities = useMemo(() => [...new Set(acUnits.map(unit => unit.companyCity))], [acUnits]);
 
   const handleCardClick = (unit: ACUnit) => {
@@ -101,8 +106,8 @@ export default function Home() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Companies</SelectItem>
-                {config.companies.map(company => (
-                  <SelectItem key={company.name} value={company.name} className="capitalize">{company.name}</SelectItem>
+                {uniqueCompanies.map(company => (
+                  <SelectItem key={company} value={company} className="capitalize">{company}</SelectItem>
                 ))}
               </SelectContent>
             </Select>

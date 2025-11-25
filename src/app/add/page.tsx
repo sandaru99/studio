@@ -78,7 +78,7 @@ export default function AddAcPage() {
     const onSubmit = (data: FormData) => {
         const unitsToAdd = data.acUnits.map(unit => ({
             ...unit,
-            company: data.company === 'CUSTOMER' ? 'Customer' : data.company,
+            company: data.company,
             companyCity: data.companyCity,
             mapLocation: data.mapLocation,
             customerName: data.company === 'CUSTOMER' ? data.customerName : undefined,
