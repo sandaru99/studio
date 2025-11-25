@@ -123,7 +123,7 @@ export default function AddAcPage() {
                                                 <SelectTrigger><SelectValue placeholder="Select a company or owner" /></SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {config.companies.map(c => <SelectItem key={c.name} value={c.name} className="capitalize">{c.name}</SelectItem>)}
+                                                {config.companies.filter(c => c.name.toLowerCase() !== 'customer').map(c => <SelectItem key={c.name} value={c.name} className="capitalize">{c.name}</SelectItem>)}
                                                 <SelectItem value="CUSTOMER">CUSTOMER</SelectItem>
                                             </SelectContent>
                                         </Select>
@@ -200,7 +200,7 @@ export default function AddAcPage() {
                                         <FormItem><FormLabel>BTU Capacity</FormLabel><Select onValueChange={(v) => field.onChange(Number(v))} defaultValue={String(field.value)}><FormControl><SelectTrigger><SelectValue placeholder="Select capacity" /></SelectTrigger></FormControl><SelectContent>{config.btuCapacities.map(b => <SelectItem key={b} value={String(b)}>{b}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                                     )} />
                                     <FormField name={`acUnits.${index}.gasType`} control={form.control} render={({ field }) => (
-                                        <FormItem><FormLabel>Gas Type</FormLabel><Select onValuechange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select gas type" /></SelectTrigger></FormControl><SelectContent>{config.gasTypes.map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
+                                        <FormItem><FormLabel>Gas Type</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select gas type" /></SelectTrigger></FormControl><SelectContent>{config.gasTypes.map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                                     )} />
                                     <FormField name={`acUnits.${index}.acType`} control={form.control} render={({ field }) => (
                                         <FormItem><FormLabel>AC Type</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select AC type" /></SelectTrigger></FormControl><SelectContent>{config.acTypes.map(t => <SelectItem key={t} value={t} className="capitalize">{t}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
