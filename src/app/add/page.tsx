@@ -42,12 +42,12 @@ const formSchema = z.object({
   customerContact: z.string().optional(),
   acUnits: z.array(acUnitSchema).min(1, 'At least one AC unit is required'),
 }).refine(data => {
-    if (data.company === 'customer') {
+    if (data.company === 'CUSTOMER') {
         return data.customerName && data.customerAddress && data.customerContact;
     }
     return true;
 }, {
-    message: 'Customer name, address, and contact are required when company is "customer"',
+    message: 'Customer name, address, and contact are required for a private customer',
     path: ['customerName'], // You can point to one of the fields
 });
 
@@ -78,12 +78,12 @@ export default function AddAcPage() {
     const onSubmit = (data: FormData) => {
         const unitsToAdd = data.acUnits.map(unit => ({
             ...unit,
-            company: data.company,
+            company: data.company === 'CUSTOMER' ? 'Customer' : data.company,
             companyCity: data.companyCity,
             mapLocation: data.mapLocation,
-            customerName: data.company === 'customer' ? data.customerName : undefined,
-            customerAddress: data.company === 'customer' ? data.customerAddress : undefined,
-            customerContact: data.company === 'customer' ? data.customerContact : undefined,
+            customerName: data.company === 'CUSTOMER' ? data.customerName : undefined,
+            customerAddress: data.company === 'CUSTOMER' ? data.customerAddress : undefined,
+            customerContact: data.company === 'CUSTOMER' ? data.customerContact : undefined,
         }));
         addAcUnits(unitsToAdd);
         toast({
@@ -120,10 +120,11 @@ export default function AddAcPage() {
                                         <FormLabel>Company / Owner</FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                             <FormControl>
-                                                <SelectTrigger><SelectValue placeholder="Select a company" /></SelectTrigger>
+                                                <SelectTrigger><SelectValue placeholder="Select a company or owner" /></SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
                                                 {config.companies.map(c => <SelectItem key={c.name} value={c.name} className="capitalize">{c.name}</SelectItem>)}
+                                                <SelectItem value="CUSTOMER">Private Customer</SelectItem>
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
@@ -146,7 +147,7 @@ export default function AddAcPage() {
                                     </FormItem>
                                 )} />
                             </div>
-                             {companyWatcher === 'customer' && (
+                             {companyWatcher === 'CUSTOMER' && (
                                 <>
                                 <Separator />
                                 <CardDescription>Please provide the customer's contact information.</CardDescription>
@@ -199,7 +200,7 @@ export default function AddAcPage() {
                                         <FormItem><FormLabel>BTU Capacity</FormLabel><Select onValueChange={(v) => field.onChange(Number(v))} defaultValue={String(field.value)}><FormControl><SelectTrigger><SelectValue placeholder="Select capacity" /></SelectTrigger></FormControl><SelectContent>{config.btuCapacities.map(b => <SelectItem key={b} value={String(b)}>{b}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                                     )} />
                                     <FormField name={`acUnits.${index}.gasType`} control={form.control} render={({ field }) => (
-                                        <FormItem><FormLabel>Gas Type</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select gas type" /></SelectTrigger></FormControl><SelectContent>{config.gasTypes.map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
+                                        <FormItem><FormLabel>Gas Type</FormLabel><Select onValuechange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select gas type" /></SelectTrigger></FormControl><SelectContent>{config.gasTypes.map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                                     )} />
                                     <FormField name={`acUnits.${index}.acType`} control={form.control} render={({ field }) => (
                                         <FormItem><FormLabel>AC Type</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select AC type" /></SelectTrigger></FormControl><SelectContent>{config.acTypes.map(t => <SelectItem key={t} value={t} className="capitalize">{t}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
@@ -233,3 +234,5 @@ export default function AddAcPage() {
         </div>
     );
 }
+
+    

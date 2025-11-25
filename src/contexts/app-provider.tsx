@@ -10,7 +10,6 @@ const initialConfig: AppConfig = {
       { name: 'asiri', color: '#32CD32' },
       { name: 'nsb', color: '#FFD700' },
       { name: 'hnb', color: '#FF4500' },
-      { name: 'customer', color: '#8A2BE2' }
   ],
   statuses: [
       { name: 'active', color: '#22C55E' },
@@ -150,3 +149,5 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     </AppContext.Provider>
   );
 };
+
+    
