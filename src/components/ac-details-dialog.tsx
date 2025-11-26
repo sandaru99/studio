@@ -22,6 +22,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { ScrollArea } from "./ui/scroll-area";
 
 interface AcDetailsDialogProps {
     unit: ACUnit | null;
@@ -57,7 +58,7 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-lg">
+            <DialogContent className="w-[95vw] sm:w-full max-w-lg max-h-[90vh] flex flex-col">
                 <DialogHeader>
                     <DialogTitle>AC Unit Details</DialogTitle>
                     <DialogDescription>
@@ -65,11 +66,13 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
                     </DialogDescription>
                 </DialogHeader>
                 
-                <div className="py-4">
-                    <AcCard unit={unit} />
-                </div>
+                <ScrollArea className="flex-grow pr-6 -mr-6">
+                    <div className="py-4">
+                        <AcCard unit={unit} />
+                    </div>
+                </ScrollArea>
                 
-                <div className="grid gap-4 py-4">
+                <div className="grid gap-4 py-4 pr-6">
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="status" className="text-right">
                             Status
@@ -92,7 +95,7 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
                     </div>
                 </div>
 
-                <DialogFooter className="sm:justify-end gap-2">
+                <DialogFooter className="sm:justify-end gap-2 pr-6">
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant="destructive">
