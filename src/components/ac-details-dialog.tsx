@@ -58,7 +58,7 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
-            <DialogContent className="w-[95vw] sm:w-full max-w-lg max-h-[90vh] flex flex-col">
+            <DialogContent className="w-[95vw] sm:w-full max-w-lg max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>AC Unit Details</DialogTitle>
                     <DialogDescription>
@@ -66,13 +66,11 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
                     </DialogDescription>
                 </DialogHeader>
                 
-                <ScrollArea className="flex-grow pr-6 -mr-6">
-                    <div className="py-4">
-                        <AcCard unit={unit} />
-                    </div>
-                </ScrollArea>
+                <div className="py-4">
+                    <AcCard unit={unit} />
+                </div>
                 
-                <div className="grid gap-4 py-4 pr-6">
+                <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="status" className="text-right">
                             Status
@@ -95,7 +93,7 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
                     </div>
                 </div>
 
-                <DialogFooter className="sm:justify-end gap-2 pr-6">
+                <DialogFooter className="sm:justify-end gap-2">
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant="destructive">
