@@ -75,6 +75,53 @@ export default function AddAcPage() {
 
     const companyWatcher = form.watch('company');
 
+    const handleGetLocation = () => {
+        if (!navigator.geolocation) {
+            toast({
+                variant: "destructive",
+                title: "Geolocation is not supported",
+                description: "Your browser does not support geolocation.",
+            });
+            return;
+        }
+
+        toast({
+            title: "Fetching location...",
+            description: "Please allow location access.",
+        });
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                const url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+                form.setValue('mapLocation', url, { shouldValidate: true });
+                toast({
+                    title: "Location found!",
+                    description: "Google Maps URL has been set.",
+                });
+            },
+            (error) => {
+                let message = "An unknown error occurred.";
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        message = "You denied the request for Geolocation.";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        message = "Location information is unavailable.";
+                        break;
+                    case error.TIMEOUT:
+                        message = "The request to get user location timed out.";
+                        break;
+                }
+                toast({
+                    variant: "destructive",
+                    title: "Error getting location",
+                    description: message,
+                });
+            }
+        );
+    };
+
     const onSubmit = (data: FormData) => {
         const unitsToAdd = data.acUnits.map(unit => ({
             ...unit,
@@ -142,7 +189,15 @@ export default function AddAcPage() {
                                 <FormField name="mapLocation" control={form.control} render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Google Map Location</FormLabel>
-                                        <FormControl><Input placeholder="Paste Google Maps URL here" {...field} /></FormControl>
+                                        <div className="flex gap-2">
+                                            <FormControl>
+                                                <Input placeholder="Paste Google Maps URL or get current location" {...field} />
+                                            </FormControl>
+                                            <Button type="button" variant="outline" size="icon" onClick={handleGetLocation}>
+                                                <MapPin className="h-4 w-4" />
+                                                <span className="sr-only">Get Current Location</span>
+                                            </Button>
+                                        </div>
                                         <FormMessage />
                                     </FormItem>
                                 )} />
@@ -234,3 +289,5 @@ export default function AddAcPage() {
         </div>
     );
 }
+
+    
