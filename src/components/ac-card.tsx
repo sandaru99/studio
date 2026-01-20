@@ -114,7 +114,7 @@ export function AcCard({ unit, isGrouped = false, onClick }: AcCardProps) {
             </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
             <div className="flex items-center gap-2 text-muted-foreground p-1 rounded-md">
                 <Thermometer className="w-4 h-4" />
                 <span>{btu} BTU</span>

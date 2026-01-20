@@ -71,15 +71,15 @@ export function AcDetailsDialog({ unit, isOpen, onOpenChange }: AcDetailsDialogP
                 </div>
                 
                 <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="status" className="text-right">
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-4 sm:items-center sm:gap-4">
+                        <Label htmlFor="status" className="sm:text-right">
                             Status
                         </Label>
                         <Select
                             value={unit.status}
                             onValueChange={handleStatusChange}
                         >
-                            <SelectTrigger className="col-span-3">
+                            <SelectTrigger className="sm:col-span-3">
                                 <SelectValue placeholder="Select a status" />
                             </SelectTrigger>
                             <SelectContent>
