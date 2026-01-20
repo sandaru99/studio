@@ -17,7 +17,7 @@ type ConfigKey = keyof Omit<AppConfig, 'companies' | 'btuCapacities' | 'inverter
 type ConfigNumberKey = keyof Pick<AppConfig, 'btuCapacities'>;
 
 export default function SettingsPage() {
-    const { config, acUnits, updateConfig, importData, isInitialized } = useAppStore();
+    const { config, acUnits, updateConfig, importData } = useAppStore();
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [newValues, setNewValues] = useState<Record<string, string>>({
@@ -182,10 +182,6 @@ export default function SettingsPage() {
     const numberConfigSections: { key: ConfigNumberKey, label: string }[] = [
         { key: 'btuCapacities', label: 'BTU Capacities' },
     ];
-
-    if (!isInitialized) {
-        return <div className="p-8">Loading settings...</div>;
-    }
 
     return (
         <div className="flex-1 flex-col p-4 md:p-6 lg:p-8 gap-8">

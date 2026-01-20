@@ -16,7 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 type SortKey = keyof ACUnit | '';
 
 export default function ReportPage() {
-    const { acUnits, isInitialized } = useAppStore();
+    const { acUnits } = useAppStore();
     const { toast } = useToast();
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
@@ -118,8 +118,6 @@ export default function ReportPage() {
         { key: 'btu', label: 'BTU' },
         { key: 'installLocation', label: 'Install Location' },
     ];
-
-    if (!isInitialized) return <p className="p-8">Loading data...</p>;
 
     return (
         <div className="flex-1 flex-col p-4 md:p-6 lg:p-8 gap-6">
